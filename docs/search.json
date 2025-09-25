@@ -39,7 +39,7 @@
     "href": "coffee-analysis.html#data-loading",
     "title": "Coffee Ratings Analysis",
     "section": "Data Loading",
-    "text": "Data Loading\nlibrary(ggplot2) library(dplyr)\ncoffee &lt;- readr::read_csv(‘https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2020/2020-07-07/coffee_ratings.csv’) country_ratings &lt;- coffee %&gt;% filter(!is.na(total_cup_points)) %&gt;% group_by(country_of_origin) %&gt;% summarise(avg_rating = mean(total_cup_points), count = n()) %&gt;% filter(count &gt;= 5) %&gt;% arrange(desc(avg_rating)) %&gt;% head(10)\nggplot(country_ratings, aes(x = reorder(country_of_origin, avg_rating), y = avg_rating)) + geom_col(fill = “brown”) + coord_flip() + labs(title = “Top 10 Countries by Average Coffee Rating”, x = “Country”, y = “Average Rating”)"
+    "text": "Data Loading\nlibrary(ggplot2) library(dplyr)\ncoffee &lt;- readr::read_csv(‘https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2020/2020-07-07/coffee_ratings.csv’) country_ratings &lt;- coffee |&gt; filter(!is.na(total_cup_points))|&gt; group_by(country_of_origin) |&gt; summarize(avg_rating = mean(total_cup_points), count = n()) |&gt; filter(count &gt;= 5) |&gt; arrange(desc(avg_rating)) |&gt; head(10)\nggplot(country_ratings, aes(x = reorder(country_of_origin, avg_rating), y = avg_rating)) + geom_col(fill = “brown”) + labs(title = “Top 10 Countries by Average Coffee Rating”, x = “Country”, y = “Average Rating”)"
   },
   {
     "objectID": "about.html",

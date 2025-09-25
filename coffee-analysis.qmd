@@ -20,18 +20,17 @@ library(ggplot2)
 library(dplyr)
 
 coffee <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2020/2020-07-07/coffee_ratings.csv')
-country_ratings <- coffee %>%
-  filter(!is.na(total_cup_points)) %>%
-  group_by(country_of_origin) %>%
-  summarise(avg_rating = mean(total_cup_points),
-            count = n()) %>%
-  filter(count >= 5) %>%
-  arrange(desc(avg_rating)) %>%
+country_ratings <- coffee |>
+  filter(!is.na(total_cup_points))|>
+  group_by(country_of_origin) |>
+  summarize(avg_rating = mean(total_cup_points),
+            count = n()) |>
+  filter(count >= 5) |>
+  arrange(desc(avg_rating)) |>
   head(10)
 
 ggplot(country_ratings, aes(x = reorder(country_of_origin, avg_rating), y = avg_rating)) +
   geom_col(fill = "brown") +
-  coord_flip() +
   labs(title = "Top 10 Countries by Average Coffee Rating",
        x = "Country",
        y = "Average Rating")
