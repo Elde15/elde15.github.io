@@ -1,0 +1,30 @@
+---
+title: "Netflix Movies and TV Shows"
+description: |
+  Looking at Netflix content types from TidyTuesday
+author: Eli Della Bitta
+date: September 2, 2025
+format: 
+  html:
+    warning: false
+    message: false
+---
+
+## Introduction
+
+This dataset contains information about movies and TV shows available on Netflix. I will create a simple visualization to see how much content Netflix has for movies versus TV shows.
+
+## Data Loading
+```{r}
+library(ggplot2)
+library(dplyr)
+
+netflix <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2021/2021-04-20/netflix_titles.csv')
+content_counts <- netflix |>
+  count(type)
+
+ggplot(content_counts, aes(x = type, y = n)) +
+  geom_col(fill = "red") +
+  labs(title = "Netflix Content: Movies vs TV Shows",
+       x = "Content Type",
+       y = "Number of Titles")

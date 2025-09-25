@@ -1,10 +1,45 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "RProject1",
+    "objectID": "netflix-analysis.html",
+    "href": "netflix-analysis.html",
+    "title": "Netflix Movies and TV Shows",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2"
+    "text": "This dataset contains information about movies and TV shows available on Netflix. I will create a simple visualization to see how much content Netflix has for movies versus TV shows."
+  },
+  {
+    "objectID": "netflix-analysis.html#introduction",
+    "href": "netflix-analysis.html#introduction",
+    "title": "Netflix Movies and TV Shows",
+    "section": "",
+    "text": "This dataset contains information about movies and TV shows available on Netflix. I will create a simple visualization to see how much content Netflix has for movies versus TV shows."
+  },
+  {
+    "objectID": "netflix-analysis.html#data-loading",
+    "href": "netflix-analysis.html#data-loading",
+    "title": "Netflix Movies and TV Shows",
+    "section": "Data Loading",
+    "text": "Data Loading\nlibrary(ggplot2) library(dplyr)\nnetflix &lt;- readr::read_csv(‘https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2021/2021-04-20/netflix_titles.csv’) content_counts &lt;- netflix |&gt; count(type)\nggplot(content_counts, aes(x = type, y = n)) + geom_col(fill = “red”) + labs(title = “Netflix Content: Movies vs TV Shows”, x = “Content Type”, y = “Number of Titles”)"
+  },
+  {
+    "objectID": "coffee-analysis.html",
+    "href": "coffee-analysis.html",
+    "title": "Coffee Ratings Analysis",
+    "section": "",
+    "text": "This dataset has coffee ratings from around the world. I want to see which countries produce the highest rated coffee by looking at the total cupping scores."
+  },
+  {
+    "objectID": "coffee-analysis.html#introduction",
+    "href": "coffee-analysis.html#introduction",
+    "title": "Coffee Ratings Analysis",
+    "section": "",
+    "text": "This dataset has coffee ratings from around the world. I want to see which countries produce the highest rated coffee by looking at the total cupping scores."
+  },
+  {
+    "objectID": "coffee-analysis.html#data-loading",
+    "href": "coffee-analysis.html#data-loading",
+    "title": "Coffee Ratings Analysis",
+    "section": "Data Loading",
+    "text": "Data Loading\nlibrary(ggplot2) library(dplyr)\ncoffee &lt;- readr::read_csv(‘https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2020/2020-07-07/coffee_ratings.csv’) country_ratings &lt;- coffee %&gt;% filter(!is.na(total_cup_points)) %&gt;% group_by(country_of_origin) %&gt;% summarise(avg_rating = mean(total_cup_points), count = n()) %&gt;% filter(count &gt;= 5) %&gt;% arrange(desc(avg_rating)) %&gt;% head(10)\nggplot(country_ratings, aes(x = reorder(country_of_origin, avg_rating), y = avg_rating)) + geom_col(fill = “brown”) + coord_flip() + labs(title = “Top 10 Countries by Average Coffee Rating”, x = “Country”, y = “Average Rating”)"
   },
   {
     "objectID": "about.html",
@@ -12,5 +47,33 @@
     "title": "About",
     "section": "",
     "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Eli Della Bitta",
+    "section": "",
+    "text": "Hello, I am Eli Della Bitta. I am very interested in data science and using R to create models and quickly analyze data. Outside of the classroom, I love to play baseball, golf, pickleball, and go to the beach. Look around my website to learn more!"
+  },
+  {
+    "objectID": "index.html#welcome",
+    "href": "index.html#welcome",
+    "title": "Eli Della Bitta",
+    "section": "",
+    "text": "Hello, I am Eli Della Bitta. I am very interested in data science and using R to create models and quickly analyze data. Outside of the classroom, I love to play baseball, golf, pickleball, and go to the beach. Look around my website to learn more!"
+  },
+  {
+    "objectID": "index.html#about-this-website",
+    "href": "index.html#about-this-website",
+    "title": "Eli Della Bitta",
+    "section": "About This Website",
+    "text": "About This Website\nThis website showcases my data science projects and analyses. You can find the R code for this website in my GitHub repository."
+  },
+  {
+    "objectID": "index.html#skills-interests",
+    "href": "index.html#skills-interests",
+    "title": "Eli Della Bitta",
+    "section": "Skills & Interests",
+    "text": "Skills & Interests\n\nData Analysis: R, data visualization, statistical modeling\nSports: Baseball, golf, pickleball\nHobbies: Beach activities, outdoor recreation"
   }
 ]

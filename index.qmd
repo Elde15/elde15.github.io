@@ -1,11 +1,33 @@
 ---
-title: "RProject1"
+title: "Eli Della Bitta"
+about:
+  template: trestles
+  image: "Images/IMG_1326.jpeg"
+  image-width: 15em
+  image-shape: rounded
+  links:
+    - icon: github
+      text: GitHub
+      href: https://github.com/Elde15
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/eli-della-bitta-4109b32a3/
+    - icon: envelope
+      text: Email
+      href: mailto:eli.dellabitta@gmail.com
 ---
 
-This is a Quarto website.
+## Welcome!
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+Hello, I am Eli Della Bitta. I am very interested in data science and using R to create models and quickly analyze data. Outside of the classroom, I love to play baseball, golf, pickleball, and go to the beach. Look around my website to learn more!
 
-```{r}
-1 + 1
-```
+## About This Website
+
+This website showcases my data science projects and analyses. You can find the R code for this website in my [GitHub repository](https://github.com/Elde15/myrepo).
+
+## Skills & Interests
+
+- **Data Analysis**: R, data visualization, statistical modeling
+- **Sports**: Baseball, golf, pickleball
+- **Hobbies**: Beach activities, outdoor recreation
+---

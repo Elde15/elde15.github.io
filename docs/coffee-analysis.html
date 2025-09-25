@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Eli Della Bitta">
+<meta name="dcterms.date" content="2025-09-02">
+<meta name="description" content="Simple analysis of coffee ratings from TidyTuesday">
 
-<title>Eli Della Bitta – Eli Della Bitta - Data Science Portfolio</title>
+<title>Coffee Ratings Analysis – Eli Della Bitta - Data Science Portfolio</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -35,6 +38,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-ea1d7ac60288e0f1efdbc993fd8432ae.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
@@ -92,7 +96,7 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">About Me</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -124,65 +128,75 @@ ul.task-list li input[type="checkbox"] {
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
+   
   <ul>
-  <li><a href="#welcome" id="toc-welcome" class="nav-link active" data-scroll-target="#welcome">Welcome!</a></li>
-  <li><a href="#about-this-website" id="toc-about-this-website" class="nav-link" data-scroll-target="#about-this-website">About This Website</a></li>
-  <li><a href="#skills-interests" id="toc-skills-interests" class="nav-link" data-scroll-target="#skills-interests">Skills &amp; Interests</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#data-loading" id="toc-data-loading" class="nav-link" data-scroll-target="#data-loading">Data Loading</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<div class="quarto-about-trestles">
-  <div class="about-entity">
-    <img src="Images/IMG_1326.jpeg" class="about-image
-  rounded " style="width: 15em;">
+<main class="content" id="quarto-document-content">
+
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Eli Della Bitta</h1>
+<h1 class="title">Coffee Ratings Analysis</h1>
 </div>
+
+<div>
+  <div class="description">
+    <p>Simple analysis of coffee ratings from TidyTuesday</p>
+  </div>
+</div>
+
+
 <div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Eli Della Bitta </p>
+          </div>
   </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 2, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
 </header>
-    <div class="about-links">
-  <a href="https://github.com/Elde15" class="about-link" rel="" target="">
-    <i class="bi bi-github"></i>
-     <span class="about-link-text">GitHub</span>
-  </a>
-  <a href="https://www.linkedin.com/in/eli-della-bitta-4109b32a3/" class="about-link" rel="" target="">
-    <i class="bi bi-linkedin"></i>
-     <span class="about-link-text">LinkedIn</span>
-  </a>
-  <a href="mailto:eli.dellabitta@gmail.com" class="about-link" rel="" target="">
-    <i class="bi bi-envelope"></i>
-     <span class="about-link-text">Email</span>
-  </a>
-</div>
-  </div>
-  <div class="about-contents"><main class="content" id="quarto-document-content">
 
-<section id="welcome" class="level2">
-<h2 data-anchor-id="welcome">Welcome!</h2>
-<p>Hello, I am Eli Della Bitta. I am very interested in data science and using R to create models and quickly analyze data. Outside of the classroom, I love to play baseball, golf, pickleball, and go to the beach. Look around my website to learn more!</p>
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>This dataset has coffee ratings from around the world. I want to see which countries produce the highest rated coffee by looking at the total cupping scores.</p>
 </section>
-<section id="about-this-website" class="level2">
-<h2 data-anchor-id="about-this-website">About This Website</h2>
-<p>This website showcases my data science projects and analyses. You can find the R code for this website in my <a href="https://github.com/Elde15/myrepo">GitHub repository</a>.</p>
-</section>
-<section id="skills-interests" class="level2">
-<h2 data-anchor-id="skills-interests">Skills &amp; Interests</h2>
-<ul>
-<li><strong>Data Analysis</strong>: R, data visualization, statistical modeling</li>
-<li><strong>Sports</strong>: Baseball, golf, pickleball</li>
-<li><h2 id="hobbies-beach-activities-outdoor-recreation"><strong>Hobbies</strong>: Beach activities, outdoor recreation</h2></li>
-</ul>
+<section id="data-loading" class="level2">
+<h2 class="anchored" data-anchor-id="data-loading">Data Loading</h2>
+<p>library(ggplot2) library(dplyr)</p>
+<p>coffee &lt;- readr::read_csv(‘https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2020/2020-07-07/coffee_ratings.csv’) country_ratings &lt;- coffee %&gt;% filter(!is.na(total_cup_points)) %&gt;% group_by(country_of_origin) %&gt;% summarise(avg_rating = mean(total_cup_points), count = n()) %&gt;% filter(count &gt;= 5) %&gt;% arrange(desc(avg_rating)) %&gt;% head(10)</p>
+<p>ggplot(country_ratings, aes(x = reorder(country_of_origin, avg_rating), y = avg_rating)) + geom_col(fill = “brown”) + coord_flip() + labs(title = “Top 10 Countries by Average Coffee Rating”, x = “Country”, y = “Average Rating”)</p>
 
 
 </section>
-</main></div>
-</div>
- <!-- /main -->
+
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
     const isCodeAnnotation = (el) => {
       for (const clz of el.classList) {
         if (clz.startsWith('code-annotation-')) {                     

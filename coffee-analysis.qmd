@@ -1,0 +1,37 @@
+---
+title: "Coffee Ratings Analysis"
+description: |
+  Simple analysis of coffee ratings from TidyTuesday
+author: Eli Della Bitta
+date: September 2, 2025
+format: 
+  html:
+    warning: false
+    message: false
+---
+
+## Introduction
+
+This dataset has coffee ratings from around the world. I want to see which countries produce the highest rated coffee by looking at the total cupping scores.
+
+## Data Loading
+```{r}
+library(ggplot2)
+library(dplyr)
+
+coffee <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2020/2020-07-07/coffee_ratings.csv')
+country_ratings <- coffee %>%
+  filter(!is.na(total_cup_points)) %>%
+  group_by(country_of_origin) %>%
+  summarise(avg_rating = mean(total_cup_points),
+            count = n()) %>%
+  filter(count >= 5) %>%
+  arrange(desc(avg_rating)) %>%
+  head(10)
+
+ggplot(country_ratings, aes(x = reorder(country_of_origin, avg_rating), y = avg_rating)) +
+  geom_col(fill = "brown") +
+  coord_flip() +
+  labs(title = "Top 10 Countries by Average Coffee Rating",
+       x = "Country",
+       y = "Average Rating")

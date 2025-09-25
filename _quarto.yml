@@ -1,23 +1,24 @@
 project:
   type: website
   output-dir: docs
-  
-# ~ additional metadata excluded for brevity ~
+
 website:
-  title: "RProject1"
+  title: "Eli Della Bitta - Data Science Portfolio"
   navbar:
-    left:
-      - href: index.qmd
-        text: Home
-      - about.qmd
+    right: 
+      - text: "About Me"
+        href: index.html
+      - text: "Data Viz"
+        menu: 
+          - text: "Netflix Analysis"
+            href: netflix-analysis.html
+          - text: "Coffee Ratings"
+            href: coffee-analysis.html
 
 format:
   html:
-    theme:
-      - cosmo
-      - brand
+    theme: cosmo
     css: styles.css
     toc: true
 
 editor: visual
-
