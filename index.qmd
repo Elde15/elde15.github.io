@@ -27,7 +27,10 @@ This website showcases my data science projects and analyses. You can find the R
 
 ## Skills & Interests
 
-- **Data Analysis**: R, data visualization, statistical modeling
-- **Sports**: Baseball, golf, pickleball
-- **Hobbies**: Beach activities, outdoor recreation
----
+-   **Data Analysis**: R, data visualization, statistical modeling
+
+-   **Sports**: Baseball, golf, pickleball
+
+-   
+
+    ## **Hobbies**: Beach activities, outdoor recreation

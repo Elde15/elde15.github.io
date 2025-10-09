@@ -14,6 +14,8 @@ website:
             href: netflix-analysis.html
           - text: "Coffee Ratings"
             href: coffee-analysis.html
+          - text: "Text Analysis"
+            href: text-analysis.html
 
 format:
   html:

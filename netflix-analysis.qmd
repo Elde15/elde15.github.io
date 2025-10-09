@@ -8,6 +8,7 @@ format:
   html:
     warning: false
     message: false
+    code-fold: true
 ---
 
 ## Introduction
@@ -15,16 +16,31 @@ format:
 This dataset contains information about movies and TV shows available on Netflix. I will create a simple visualization to see how much content Netflix has for movies versus TV shows.
 
 ## Data Loading
+
 ```{r}
+#| label: setup
 library(ggplot2)
 library(dplyr)
 
 netflix <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2021/2021-04-20/netflix_titles.csv')
+```
+
+```{r}
+
 content_counts <- netflix |>
   count(type)
 
-ggplot(content_counts, aes(x = type, y = n)) +
-  geom_col(fill = "red") +
+
+ggplot(content_counts, aes(x = type, y = n, fill = type)) +
+  geom_col() +
   labs(title = "Netflix Content: Movies vs TV Shows",
        x = "Content Type",
-       y = "Number of Titles")
+       y = "Number of Titles") +
+  theme_minimal() +
+  scale_fill_manual(values = c("Movie" = "red", "TV Show" = "black"))
+```
+
+## Data Sources
+
+-   Tinytuesday Dataset: [Week 17, 2021 - Netflix Titles](https://github.com/rfordatascience/tidytuesday/blob/main/data/2021/2021-04-20/readme.md)
+-   Original Data Source: Kaggle dataset "Netflix Movies and TV Shows" compiled by Shivam Bansal, originally sourced from Flixable (a third-party Netflix search engine)

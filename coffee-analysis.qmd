@@ -8,6 +8,7 @@ format:
   html:
     warning: false
     message: false
+    code-fold: true
 ---
 
 ## Introduction
@@ -15,22 +16,36 @@ format:
 This dataset has coffee ratings from around the world. I want to see which countries produce the highest rated coffee by looking at the total cupping scores.
 
 ## Data Loading
+
 ```{r}
+#| label: setup
 library(ggplot2)
 library(dplyr)
 
 coffee <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2020/2020-07-07/coffee_ratings.csv')
+```
+
+```{r}
 country_ratings <- coffee |>
-  filter(!is.na(total_cup_points))|>
+  filter(!is.na(total_cup_points)) |>
   group_by(country_of_origin) |>
-  summarize(avg_rating = mean(total_cup_points),
+  summarise(avg_rating = mean(total_cup_points),
             count = n()) |>
   filter(count >= 5) |>
   arrange(desc(avg_rating)) |>
   head(10)
 
-ggplot(country_ratings, aes(x = reorder(country_of_origin, avg_rating), y = avg_rating)) +
-  geom_col(fill = "brown") +
+ggplot(country_ratings, aes(x = reorder(country_of_origin, avg_rating), y = avg_rating, fill = avg_rating)) +
+  geom_col() +
+  coord_flip() +
   labs(title = "Top 10 Countries by Average Coffee Rating",
        x = "Country",
-       y = "Average Rating")
+       y = "Average Rating") +
+  theme_minimal() +
+  scale_fill_gradient(low = "tan", high = "black")
+```
+
+## Data Sources
+
+-   **TidyTuesday Dataset**: [Week 28, 2020 - Coffee Ratings](https://github.com/rfordatascience/tidytuesday/blob/main/data/2020/2020-07-07/readme.md)
+-   **Original Data Source**: Coffee Quality Database from the Coffee Quality Institute (CQI), which maintains a database of professionally rated coffees
