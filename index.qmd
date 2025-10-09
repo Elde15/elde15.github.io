@@ -2,7 +2,7 @@
 title: "Eli Della Bitta"
 about:
   template: trestles
-  image: "Images/IMG_1326.jpeg"
+  image: "IMG_1326.jpeg"
   image-width: 15em
   image-shape: rounded
   links:

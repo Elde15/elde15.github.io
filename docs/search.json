@@ -1,52 +1,10 @@
 [
   {
-    "objectID": "netflix-analysis.html",
-    "href": "netflix-analysis.html",
-    "title": "Netflix Movies and TV Shows",
+    "objectID": "text-analysis.html",
+    "href": "text-analysis.html",
+    "title": "Shakespeare Dialogue Analysis",
     "section": "",
-    "text": "This dataset contains information about movies and TV shows available on Netflix. I will create a simple visualization to see how much content Netflix has for movies versus TV shows."
-  },
-  {
-    "objectID": "netflix-analysis.html#introduction",
-    "href": "netflix-analysis.html#introduction",
-    "title": "Netflix Movies and TV Shows",
-    "section": "",
-    "text": "This dataset contains information about movies and TV shows available on Netflix. I will create a simple visualization to see how much content Netflix has for movies versus TV shows."
-  },
-  {
-    "objectID": "netflix-analysis.html#data-loading",
-    "href": "netflix-analysis.html#data-loading",
-    "title": "Netflix Movies and TV Shows",
-    "section": "Data Loading",
-    "text": "Data Loading\nlibrary(ggplot2) library(dplyr)\nnetflix &lt;- readr::read_csv(‘https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2021/2021-04-20/netflix_titles.csv’) content_counts &lt;- netflix |&gt; count(type)\nggplot(content_counts, aes(x = type, y = n)) + geom_col(fill = “red”) + labs(title = “Netflix Content: Movies vs TV Shows”, x = “Content Type”, y = “Number of Titles”)"
-  },
-  {
-    "objectID": "coffee-analysis.html",
-    "href": "coffee-analysis.html",
-    "title": "Coffee Ratings Analysis",
-    "section": "",
-    "text": "This dataset has coffee ratings from around the world. I want to see which countries produce the highest rated coffee by looking at the total cupping scores."
-  },
-  {
-    "objectID": "coffee-analysis.html#introduction",
-    "href": "coffee-analysis.html#introduction",
-    "title": "Coffee Ratings Analysis",
-    "section": "",
-    "text": "This dataset has coffee ratings from around the world. I want to see which countries produce the highest rated coffee by looking at the total cupping scores."
-  },
-  {
-    "objectID": "coffee-analysis.html#data-loading",
-    "href": "coffee-analysis.html#data-loading",
-    "title": "Coffee Ratings Analysis",
-    "section": "Data Loading",
-    "text": "Data Loading\nlibrary(ggplot2) library(dplyr)\ncoffee &lt;- readr::read_csv(‘https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2020/2020-07-07/coffee_ratings.csv’) country_ratings &lt;- coffee |&gt; filter(!is.na(total_cup_points))|&gt; group_by(country_of_origin) |&gt; summarize(avg_rating = mean(total_cup_points), count = n()) |&gt; filter(count &gt;= 5) |&gt; arrange(desc(avg_rating)) |&gt; head(10)\nggplot(country_ratings, aes(x = reorder(country_of_origin, avg_rating), y = avg_rating)) + geom_col(fill = “brown”) + labs(title = “Top 10 Countries by Average Coffee Rating”, x = “Country”, y = “Average Rating”)"
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
+    "text": "This analysis will look at dialogue from Shakespeare’s plays to find patterns in the text. I will use string functions and regular expressions to identify questions, exclamations, character speech patterns, and emotional language. The dataset contains lines from multiple Shakespeare plays including Romeo and Juliet, Hamlet, and Macbeth.\n\n\nCode\nlibrary(tidyverse)\nlibrary(stringr)\n\nshakespeare &lt;- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2024/2024-09-17/hamlet.csv')\n\nhead(shakespeare)\n\n\n# A tibble: 6 × 5\n  act   scene   character         dialogue                           line_number\n  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;             &lt;chr&gt;                                    &lt;dbl&gt;\n1 Act I Scene I [stage direction] FRANCISCO at his post. Enter to h…          NA\n2 Act I Scene I Bernardo          Who's there?                                 1\n3 Act I Scene I Francisco         Nay, answer me: stand, and unfold…           2\n4 Act I Scene I Bernardo          Long live the king!                          3\n5 Act I Scene I Francisco         Bernardo?                                    4\n6 Act I Scene I Bernardo          He.                                          5\n\n\n\n\nCode\nshakespeare &lt;- shakespeare |&gt;\n  mutate(\n    is_question = str_detect(dialogue, \"\\\\?$\"),  \n    is_exclamation = str_detect(dialogue, \"!$\"), \n    line_length = str_length(dialogue)            \n  )\n\nquestion_summary &lt;- shakespeare |&gt;\n  summarise(\n    questions = sum(is_question, na.rm = TRUE),\n    exclamations = sum(is_exclamation, na.rm = TRUE),\n    statements = n() - questions - exclamations\n  ) |&gt;\n  pivot_longer(everything(), names_to = \"type\", values_to = \"count\")\n\nggplot(question_summary, aes(x = type, y = count, fill = type)) +\n  geom_col() +\n  labs(title = \"Types of Lines in Hamlet\",\n       x = \"Line Type\",\n       y = \"Number of Lines\") +\n  theme_minimal() +\n  scale_fill_manual(values = c(\"questions\" = \"lightblue\", \n                                 \"exclamations\" = \"pink\",\n                                 \"statements\" = \"orange\"))\n\n\n\n\n\n\n\n\n\nInsight!: Most lines in Hamlet are statements, with very few questions and exclamations. This shows the play contains more direct dialogue than interrogative or emotional outbursts. Questions make up only a small portion of the total dialogue, showing that characters often speak in statements rather than inquiries.\n\n\nCode\ncharacter_lines &lt;- shakespeare |&gt;\n  group_by(character) |&gt;\n  summarise(\n    total_lines = n(),\n    avg_line_length = mean(line_length, na.rm = TRUE),\n    question_rate = mean(is_question, na.rm = TRUE) * 100\n  ) |&gt;\n  filter(total_lines &gt;= 20) |&gt;  \n  arrange(desc(total_lines)) |&gt;\n  head(10)\n\nggplot(character_lines, aes(x = reorder(character, total_lines), y = total_lines)) +\n  geom_col(fill = \"skyblue\") +\n  coord_flip() +\n  labs(title = \"Top 10 Characters by Number of Lines in Hamlet\",\n       x = \"Character\",\n       y = \"Number of Lines\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nInsight!: Hamlet has significantly more lines than any other character, which makes sense as the protagonist. The distribution shows a major drop off after the main character, with supporting characters like Horatio and Claudius having substantially fewer lines. This reflects the play’s focus on Hamlet’s internal struggles and thoughts.\n\n\nCode\nshakespeare &lt;- shakespeare |&gt;\n  mutate(\n    has_love = str_detect(dialogue, \"(?i)\\\\blove\\\\b\"),     \n    has_death = str_detect(dialogue, \"(?i)\\\\bdeath\\\\b\"),   \n    has_fear = str_detect(dialogue, \"(?i)\\\\bfear\\\\b\"),\n    has_hate = str_detect(dialogue, \"(?i)\\\\bhate\\\\b\")\n  )\n\nemotion_counts &lt;- shakespeare |&gt;\n  summarise(\n    Love = sum(has_love, na.rm = TRUE),\n    Death = sum(has_death, na.rm = TRUE),\n    Fear = sum(has_fear, na.rm = TRUE),\n    Hate = sum(has_hate, na.rm = TRUE)\n  ) |&gt;\n  pivot_longer(everything(), names_to = \"emotion\", values_to = \"count\")\n\nknitr::kable(emotion_counts, \n             caption = \"Frequency of Emotional Words in Hamlet\")\n\n\n\nFrequency of Emotional Words in Hamlet\n\n\nemotion\ncount\n\n\n\n\nLove\n65\n\n\nDeath\n38\n\n\nFear\n21\n\n\nHate\n1\n\n\n\n\n\nInsight!: The table shows how often different emotional themes appear in the dialogue. Death appears most frequently, which aligns with Hamlet’s dark themes and tragic ending. Love appears less than death, reflecting the play’s focus on mortality and revenge over romance. Fear and hate have somepresence, contributing to the play’s tense atmosphere.\n\n\nCode\nthee_phrases &lt;- shakespeare |&gt;\n  filter(str_detect(dialogue, \"\\\\w+\\\\s+thee\")) |&gt;\n  mutate(\n    before_thee = str_extract(dialogue, \"\\\\w+(?=\\\\s+thee)\")\n  ) |&gt;\n  filter(!is.na(before_thee)) |&gt;\n  count(before_thee, sort = TRUE) |&gt;\n  head(10)\n\nknitr::kable(thee_phrases, \n             caption = \"Most Common Words Before 'thee' in Hamlet\",\n             col.names = c(\"Word Before 'thee'\", \"Frequency\"))\n\n\n\nMost Common Words Before ‘thee’ in Hamlet\n\n\nWord Before ‘thee’\nFrequency\n\n\n\n\nto\n4\n\n\nwith\n3\n\n\nGet\n2\n\n\nRemember\n2\n\n\ncharge\n2\n\n\ndo\n2\n\n\nfollow\n2\n\n\nget\n2\n\n\ngive\n2\n\n\nin\n2\n\n\n\n\n\nInsight!: This analysis shows common phrases used in Shakespearean English. Words like “with,” “to,” and “for” appear a lot before “thee,” showing typical sentence structures of the time period. This pattern helps us understand how characters addressed each other in formal Early Modern English.\n\nTidyTuesday Dataset: Week 38, 2024 - Shakespeare Dialogue\nOriginal Data Source: shakespeare.mit.edu - The Complete Works of William Shakespeare, specifically the Hamlet text, made available by MIT"
   },
   {
     "objectID": "index.html",
@@ -75,5 +33,68 @@
     "title": "Eli Della Bitta",
     "section": "Skills & Interests",
     "text": "Skills & Interests\n\nData Analysis: R, data visualization, statistical modeling\nSports: Baseball, golf, pickleball\nHobbies: Beach activities, outdoor recreation"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "coffee-analysis.html",
+    "href": "coffee-analysis.html",
+    "title": "Coffee Ratings Analysis",
+    "section": "",
+    "text": "This dataset has coffee ratings from around the world. I want to see which countries produce the highest rated coffee by looking at the total cupping scores."
+  },
+  {
+    "objectID": "coffee-analysis.html#introduction",
+    "href": "coffee-analysis.html#introduction",
+    "title": "Coffee Ratings Analysis",
+    "section": "",
+    "text": "This dataset has coffee ratings from around the world. I want to see which countries produce the highest rated coffee by looking at the total cupping scores."
+  },
+  {
+    "objectID": "coffee-analysis.html#data-loading",
+    "href": "coffee-analysis.html#data-loading",
+    "title": "Coffee Ratings Analysis",
+    "section": "Data Loading",
+    "text": "Data Loading\n\n\nCode\nlibrary(ggplot2)\nlibrary(dplyr)\n\ncoffee &lt;- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2020/2020-07-07/coffee_ratings.csv')\n\n\n\n\nCode\ncountry_ratings &lt;- coffee |&gt;\n  filter(!is.na(total_cup_points)) |&gt;\n  group_by(country_of_origin) |&gt;\n  summarise(avg_rating = mean(total_cup_points),\n            count = n()) |&gt;\n  filter(count &gt;= 5) |&gt;\n  arrange(desc(avg_rating)) |&gt;\n  head(10)\n\nggplot(country_ratings, aes(x = reorder(country_of_origin, avg_rating), y = avg_rating, fill = avg_rating)) +\n  geom_col() +\n  coord_flip() +\n  labs(title = \"Top 10 Countries by Average Coffee Rating\",\n       x = \"Country\",\n       y = \"Average Rating\") +\n  theme_minimal() +\n  scale_fill_gradient(low = \"tan\", high = \"black\")"
+  },
+  {
+    "objectID": "coffee-analysis.html#data-sources",
+    "href": "coffee-analysis.html#data-sources",
+    "title": "Coffee Ratings Analysis",
+    "section": "Data Sources",
+    "text": "Data Sources\n\nTidyTuesday Dataset: Week 28, 2020 - Coffee Ratings\nOriginal Data Source: Coffee Quality Database from the Coffee Quality Institute (CQI), which maintains a database of professionally rated coffees"
+  },
+  {
+    "objectID": "netflix-analysis.html",
+    "href": "netflix-analysis.html",
+    "title": "Netflix Movies and TV Shows",
+    "section": "",
+    "text": "This dataset contains information about movies and TV shows available on Netflix. I will create a simple visualization to see how much content Netflix has for movies versus TV shows."
+  },
+  {
+    "objectID": "netflix-analysis.html#introduction",
+    "href": "netflix-analysis.html#introduction",
+    "title": "Netflix Movies and TV Shows",
+    "section": "",
+    "text": "This dataset contains information about movies and TV shows available on Netflix. I will create a simple visualization to see how much content Netflix has for movies versus TV shows."
+  },
+  {
+    "objectID": "netflix-analysis.html#data-loading",
+    "href": "netflix-analysis.html#data-loading",
+    "title": "Netflix Movies and TV Shows",
+    "section": "Data Loading",
+    "text": "Data Loading\n\n\nCode\nlibrary(ggplot2)\nlibrary(dplyr)\n\nnetflix &lt;- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2021/2021-04-20/netflix_titles.csv')\n\n\n\n\nCode\ncontent_counts &lt;- netflix |&gt;\n  count(type)\n\n\nggplot(content_counts, aes(x = type, y = n, fill = type)) +\n  geom_col() +\n  labs(title = \"Netflix Content: Movies vs TV Shows\",\n       x = \"Content Type\",\n       y = \"Number of Titles\") +\n  theme_minimal() +\n  scale_fill_manual(values = c(\"Movie\" = \"red\", \"TV Show\" = \"black\"))"
+  },
+  {
+    "objectID": "netflix-analysis.html#data-sources",
+    "href": "netflix-analysis.html#data-sources",
+    "title": "Netflix Movies and TV Shows",
+    "section": "Data Sources",
+    "text": "Data Sources\n\nTinytuesday Dataset: Week 17, 2021 - Netflix Titles\nOriginal Data Source: Kaggle dataset “Netflix Movies and TV Shows” compiled by Shivam Bansal, originally sourced from Flixable (a third-party Netflix search engine)"
   }
 ]
