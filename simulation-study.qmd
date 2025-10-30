@@ -1,0 +1,150 @@
+---
+title: "Penguin Body Mass: A Permutation Test"
+description: |
+  Simulation study using permutation test to compare body mass between male and female penguins
+author: Eli Della Bitta
+date: October 30, 2025
+format: 
+  html:
+    warning: false
+    message: false
+    code-fold: true
+---
+
+## Introduction
+
+In this simulation study, I will investigate whether there is a significant difference in body mass between male and female Adelie penguins using a permutation test. A permutation test works by simulating what we would expect to see if there were truly no difference between groups (the null hypothesis). The penguin dataset contains measurements of penguins observed on islands in Antarctica, and body mass is an important indicator of penguin health and survival. Understanding sex-based differences in body mass can help researchers better understand penguin biology and population dynamics.
+
+## Data Loading and Exploration
+```{r}
+#| label: setup
+library(tidyverse)
+library(palmerpenguins)
+
+# Load penguin data
+penguins_clean <- penguins |>
+  filter(species == "Adelie") |>
+  filter(!is.na(body_mass_g), !is.na(sex)) |>
+  select(sex, body_mass_g)
+
+# Show first few rows
+head(penguins_clean)
+```
+
+## Visualizing the Original Data
+
+Before conducting the permutation test, let's visualize the body mass distributions for male and female penguins.
+```{r}
+#| label: original-data-plot
+ggplot(penguins_clean, aes(x = sex, y = body_mass_g, fill = sex)) +
+  geom_boxplot(alpha = 0.7) +
+  geom_jitter(width = 0.2, alpha = 0.3) +
+  labs(title = "Body Mass of Male vs Female Adelie Penguins",
+       x = "Sex",
+       y = "Body Mass (g)",
+       fill = "Sex") +
+  theme_minimal() +
+  scale_fill_manual(values = c("female" = "#FF6B9D", "male" = "#4A90E2"))
+```
+
+**What I See:** The boxplot shows that male penguins appear to have higher body mass than female penguins on average. Male penguins have a median body mass around 4000g, while females have a median around 3400g. There is some overlap between the groups, but the distributions look fairly distinct. The question is: could this difference have occurred by random chance, or is it statistically significant?
+
+## The Permutation Test
+
+### Writing the Permutation Function
+
+I will create a function that calculates the difference in mean body mass between the two groups. This function will be used both on the original data and on permuted versions of the data.
+```{r}
+#| label: difference-function
+# Function to calculate difference in means
+calc_diff_means <- function(data) {
+  data |>
+    group_by(sex) |>
+    summarise(mean_mass = mean(body_mass_g)) |>
+    summarise(diff = diff(mean_mass)) |>
+    pull(diff)
+}
+
+# Calculate observed difference
+observed_diff <- calc_diff_means(penguins_clean)
+observed_diff
+```
+
+The observed difference in means is about `r round(observed_diff, 1)` grams, with males being heavier.
+
+### Running the Permutation Test
+
+Now I will use `map()` to run many permutations. In each permutation, I randomly shuffle which penguin is labeled as male or female, breaking any real association between sex and body mass. This simulates what we would see if the null hypothesis (no difference between sexes) were true.
+```{r}
+#| label: permutation-simulation
+set.seed(123)  # For reproducibility
+
+# Function to permute and calculate difference
+permute_and_calc <- function(i, data) {
+  data |>
+    mutate(sex = sample(sex)) |>  # Randomly shuffle sex labels
+    calc_diff_means()
+}
+
+# Run 1000 permutations using map_dbl
+n_permutations <- 1000
+permuted_diffs <- map_dbl(1:n_permutations, ~permute_and_calc(.x, penguins_clean))
+
+# Create data frame for plotting
+perm_results <- tibble(
+  permutation = 1:n_permutations,
+  diff_in_means = permuted_diffs
+)
+
+head(perm_results)
+```
+
+### Visualizing Permutation Results
+```{r}
+#| label: permutation-plot
+ggplot(perm_results, aes(x = diff_in_means)) +
+  geom_histogram(bins = 30, fill = "lightblue", color = "black", alpha = 0.7) +
+  geom_vline(xintercept = observed_diff, color = "red", linewidth = 1.5, linetype = "dashed") +
+  labs(title = "Distribution of Differences Under Null Hypothesis",
+       subtitle = "Red line shows observed difference in original data",
+       x = "Difference in Mean Body Mass (g)",
+       y = "Frequency") +
+  theme_minimal()
+```
+
+**What I See:** The histogram shows the distribution of differences we would expect to see if there were actually no relationship between sex and body mass. Most permuted differences are centered around zero, which makes sense because I am randomly assigning sex labels. The red dashed line shows our observed difference from the real data. It's far to the right of the permutation distribution, suggesting that the observed difference is unlikely to have occurred by chance alone.
+
+### Calculating the P-Value
+```{r}
+#| label: p-value
+# Calculate p-value (proportion of permuted differences as extreme as observed)
+p_value <- mean(abs(permuted_diffs) >= abs(observed_diff))
+p_value
+```
+
+The p-value is 0, which means that we never saw a difference as large as we did in the observed data. 
+
+## Results Table
+```{r}
+#| label: results-table
+results_summary <- tibble(
+  Statistic = c("Observed Difference", "P-Value", "Number of Permutations"),
+  Value = c(round(observed_diff, 2), round(p_value, 4), n_permutations)
+)
+
+knitr::kable(results_summary, 
+             caption = "Permutation Test Results")
+```
+
+## Conclusion
+
+This simulation study used a permutation test to look at whether male and female Adelie penguins have significantly different body masses. The observed difference of 674.66 grams is extremely unlikely to have occurred by random chance (p < 0.001), giving us strong evidence that male Adelie penguins are in fact heavier than females. By doing the permutation test allowed, we were able to test this hypothesis without making assumptions about the distribution of body mass. This finding also lines with what biologists know about the difference in sex among penguins, further confirming our findings. 
+
+## How the Simulation Works
+
+My function calculates the difference in average body mass between the two groups. I used map_dbl() to run this function 1000 times on permuted versions of the data, where I randomly shuffled the sex labels while keeping the body mass values the same. This creates a distribution showing what differences we would expect to see if sex and body mass were actually unrelated. By comparing our observed difference to this null distribution, we can determine if the real difference is statistically significant.
+
+## Data Source
+
+- **Dataset**: Palmer Penguins dataset from the `palmerpenguins` R package
+- **Original Source**: Data collected and made available by Dr. Kristen Gorman and the Palmer Station, Antarctica LTER. Horst AM, Hill AP, Gorman KB (2020). palmerpenguins: Palmer Archipelago (Antarctica) penguin data. R package version 0.1.0.
