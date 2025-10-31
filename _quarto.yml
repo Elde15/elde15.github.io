@@ -16,7 +16,7 @@ website:
             href: coffee-analysis.html
           - text: "Text Analysis"
             href: text-analysis.html
-            text: "Simulation Study"
+          - text: "Simulation Study"
             href: simulation-study.html
 
 format:
