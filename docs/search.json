@@ -159,5 +159,68 @@
     "title": "Penguin Body Mass: A Permutation Test",
     "section": "Data Source",
     "text": "Data Source\n\nDataset: Palmer Penguins dataset from the palmerpenguins R package\nOriginal Source: Data collected and made available by Dr. Kristen Gorman and the Palmer Station, Antarctica LTER. Horst AM, Hill AP, Gorman KB (2020). palmerpenguins: Palmer Archipelago (Antarctica) penguin data. R package version 0.1.0."
+  },
+  {
+    "objectID": "ethics-analysis.html",
+    "href": "ethics-analysis.html",
+    "title": "Facebook Emotional Contagion Experiment: An Ethics Analysis",
+    "section": "",
+    "text": "In 2012, Facebook did a secret psychological experiment on nearly 700,000 users without their knowledge or consent. The study, published in 2014, manipulated users News Feeds to show either positive or negative emotional content to try and see if emotions could spread through social media (Kramer, Guillory, & Hancock, 2014). When users saw more positive posts from friends, they posted more positive content on their own accounts. When they saw more negative posts, they posted more negatively. This experiment sparked major controversy about consent, user privacy, and the ethics of conducting psychological research on participants who are unaware through a social media platform.\nThe data science aspect involves Facebook’s algorithm manipulating what content shows up in users News Feeds, then analyzing the posts using user sentiment analysis to measure emotional bias. The ethical issues center on whether it is acceptable to preform psychological experiments on users without their knowledge, using a platform they rely on for social connection, and potentially causing psychological harm in the process."
+  },
+  {
+    "objectID": "ethics-analysis.html#introduction",
+    "href": "ethics-analysis.html#introduction",
+    "title": "Facebook Emotional Contagion Experiment: An Ethics Analysis",
+    "section": "",
+    "text": "In 2012, Facebook did a secret psychological experiment on nearly 700,000 users without their knowledge or consent. The study, published in 2014, manipulated users News Feeds to show either positive or negative emotional content to try and see if emotions could spread through social media (Kramer, Guillory, & Hancock, 2014). When users saw more positive posts from friends, they posted more positive content on their own accounts. When they saw more negative posts, they posted more negatively. This experiment sparked major controversy about consent, user privacy, and the ethics of conducting psychological research on participants who are unaware through a social media platform.\nThe data science aspect involves Facebook’s algorithm manipulating what content shows up in users News Feeds, then analyzing the posts using user sentiment analysis to measure emotional bias. The ethical issues center on whether it is acceptable to preform psychological experiments on users without their knowledge, using a platform they rely on for social connection, and potentially causing psychological harm in the process."
+  },
+  {
+    "objectID": "ethics-analysis.html#informed-consent-and-user-awareness",
+    "href": "ethics-analysis.html#informed-consent-and-user-awareness",
+    "title": "Facebook Emotional Contagion Experiment: An Ethics Analysis",
+    "section": "Informed Consent and User Awareness",
+    "text": "Informed Consent and User Awareness\nThe most significant ethical issue with this experiment was the absence of consent. The researchers did not notify participants that they were part of a psychological study, and they did not give users the option to opt out (Meyer, 2014). Facebook’s argument was that users agreed to the platform’s Data Use Policy when they signed up, which stated that user data could be used for “research” and “testing.” However, this relatively vauge language they buried in their terms of service does not really allow informed consent for a psychological experiment.\nInformed consent requires that participants understand what they are agreeing to, including the purpose of the study, any potential risks, and their right to withdraw. The Facebook users had no idea their emotions were being deliberately manipulated as part of an experiment. They could not provide meaningful consent because they did not know the study even existed. This violates basic ethical standards established by Institutional Review Boards, which require voluntary participation based on full disclosure of the research activities that are taking place. The fact that Facebook claimed their Terms of Service covered this experiment demonstrates how companies exploit legal agreements to conduct research that would never pass ethical review at a university."
+  },
+  {
+    "objectID": "ethics-analysis.html#privacy-and-data-collection",
+    "href": "ethics-analysis.html#privacy-and-data-collection",
+    "title": "Facebook Emotional Contagion Experiment: An Ethics Analysis",
+    "section": "Privacy and Data Collection",
+    "text": "Privacy and Data Collection\nThis data collection process raised serious privacy concerns. Facebook collected and analyzed the emotional content of users posts without any permission for this experimental purpose (Puschmann & Bozdag, 2014). While users post content knowing it will be seen by friends, they may have different expectations about how that data might be used for psychological research. The platform took advantage of its position as a social network to conduct research that users would not have anticipated when they signed up.\nAlso, Facebook did not passively observe user behavior, rather, they manipulated what users saw in order to influence their emotional state. This goes beyond normal data collection and enters the world of experimentation on human subjects. This emotional manipulation could have had real psychological effects, particularly for vulnerable users who might have been experiencing depression or other mental health challenges. By actively showing some users more negative content, Facebook could have possibly worsened mental health outcomes for certain individuals, all without their knowledge of any ethics board."
+  },
+  {
+    "objectID": "ethics-analysis.html#bias-and-representation",
+    "href": "ethics-analysis.html#bias-and-representation",
+    "title": "Facebook Emotional Contagion Experiment: An Ethics Analysis",
+    "section": "Bias and Representation",
+    "text": "Bias and Representation\nThe study also raises questions about exactly who was affected. The experiment included 689,003 users, but we do not know the demographic breakdown of participants or whether certain groups were shown more negative content than others (Kramer et al., 2014).\nAdditionally, Facebook users are not representative of the general population. The findings about emotional contagion were generalized to make claims about human psychology and social networks broadly, but the sample consisted only of English-speaking Facebook users during a specific time period. The researchers did not acknowledge these limitations adequately, treating Facebook users as if they were a random sample of humanity rather than a specific subset of people who use social media in particular ways."
+  },
+  {
+    "objectID": "ethics-analysis.html#power-dynamics-and-harm",
+    "href": "ethics-analysis.html#power-dynamics-and-harm",
+    "title": "Facebook Emotional Contagion Experiment: An Ethics Analysis",
+    "section": "Power Dynamics and Harm",
+    "text": "Power Dynamics and Harm\nThis experiment shows how corporations have enormous power over their users with very little accountability. Facebook conducted research that would require a lot of ethical review at any university, yet faced no such oversight because it was done internally by a private company (Meyer, 2014).\nThe potential for harm was real and essentially ignored. Some users who were shown more negative content might have experienced worsened mood, increased anxiety, or other psychological effects. Facebook did not follow up with participants to assess harm, offer support, or even inform them they had been part of an experiment. The company prioritized its research interests over human wellbeing, treating hundreds of thousands of people as lab subjects rather than as customers deserving respect and protection."
+  },
+  {
+    "objectID": "ethics-analysis.html#why-this-matters",
+    "href": "ethics-analysis.html#why-this-matters",
+    "title": "Facebook Emotional Contagion Experiment: An Ethics Analysis",
+    "section": "Why This Matters",
+    "text": "Why This Matters\nThis case matters because it reveals how tech companies exploit their power to conduct research in the service of profit maximization, with little regard for user safety or harm that could be caused. Facebook benefits from understanding emotional desires because it helps them design more engaging features that keep users on the platform longer, seeing more ads.\nThis experiment demonstrates “surveillance capitalism” at work: users are constantly monitored, their data analyzed, and they are experimented upon to generate profit for the company. The vulnerable are even more at risk because they have fewer alternatives and less power to resist platform policies. When corporations can conduct psychological experiments without consent or oversight, everyone becomes a potential research subject, and the most vulnerable have the least protection."
+  },
+  {
+    "objectID": "ethics-analysis.html#conclusion",
+    "href": "ethics-analysis.html#conclusion",
+    "title": "Facebook Emotional Contagion Experiment: An Ethics Analysis",
+    "section": "Conclusion",
+    "text": "Conclusion\nThe Facebook emotional experiment violated fundamental ethical principles of informed consent, respect for users, and protection from harm. It shows how tech companies can use their power over users to conduct research that serves corporate interests while creating risks for users that they never agreed to take. This case serves as a warning about the need for stronger ethical oversight of corporate research and greater protection for the rights and wellbeing of people who use digital platforms."
+  },
+  {
+    "objectID": "ethics-analysis.html#references",
+    "href": "ethics-analysis.html#references",
+    "title": "Facebook Emotional Contagion Experiment: An Ethics Analysis",
+    "section": "References",
+    "text": "References\nKramer, A. D., Guillory, J. E., & Hancock, J. T. (2014). Experimental evidence of massive-scale emotional contagion through social networks. Proceedings of the National Academy of Sciences, 111(24), 8788-8790. https://doi.org/10.1073/pnas.1320040111\nMeyer, R. (2014, June 28). Everything we know about Facebook’s secret mood manipulation experiment. The Atlantic. https://www.theatlantic.com/technology/archive/2014/06/everything-we-know-about-facebooks-secret-mood-manipulation-experiment/373648/\nPuschmann, C., & Bozdag, E. (2014). Staking out the unclear ethical terrain of online social experiments. Internet Policy Review, 3(4). https://doi.org/10.14763/2014.4.338"
   }
 ]

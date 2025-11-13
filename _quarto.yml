@@ -18,6 +18,8 @@ website:
             href: text-analysis.html
           - text: "Simulation Study"
             href: simulation-study.html
+          - text: "Ethics Analysis"
+            href: ethics-analysis.html
 
 format:
   html:
