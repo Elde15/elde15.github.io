@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.21">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Eli Della Bitta">
+<meta name="dcterms.date" content="2025-12-01">
+<meta name="description" content="SQL analysis comparing search rates and outcomes in California, Texas, and Florida traffic stops">
+
+<title>Police Stop Search Rates Across Three States – Eli Della Bitta - Data Science Portfolio</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ea1d7ac60288e0f1efdbc993fd8432ae.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-e31584831b205ffbb2d98406f31c2a5b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    </a>
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Eli Della Bitta - Data Science Portfolio</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">About Me</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-data-viz" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Data Viz</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-data-viz">    
+        <li>
+    <a class="dropdown-item" href="./netflix-analysis.html">
+ <span class="dropdown-text">Netflix Analysis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./coffee-analysis.html">
+ <span class="dropdown-text">Coffee Ratings</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./text-analysis.html">
+ <span class="dropdown-text">Text Analysis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./simulation-study.html">
+ <span class="dropdown-text">Simulation Study</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./ethics-analysis.html">
+ <span class="dropdown-text">Ethics Analysis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./sql-analysis.html">
+ <span class="dropdown-text">SQL Analysis</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#connecting-to-the-database" id="toc-connecting-to-the-database" class="nav-link" data-scroll-target="#connecting-to-the-database">Connecting to the Database</a></li>
+  <li><a href="#query-1-california-highway-patrol-search-rates" id="toc-query-1-california-highway-patrol-search-rates" class="nav-link" data-scroll-target="#query-1-california-highway-patrol-search-rates">Query 1: California Highway Patrol Search Rates</a></li>
+  <li><a href="#query-2-texas-highway-patrol-search-rates" id="toc-query-2-texas-highway-patrol-search-rates" class="nav-link" data-scroll-target="#query-2-texas-highway-patrol-search-rates">Query 2: Texas Highway Patrol Search Rates</a></li>
+  <li><a href="#query-3-florida-highway-patrol-search-rates" id="toc-query-3-florida-highway-patrol-search-rates" class="nav-link" data-scroll-target="#query-3-florida-highway-patrol-search-rates">Query 3: Florida Highway Patrol Search Rates</a></li>
+  <li><a href="#combined-analysis-search-rates-across-all-three-states" id="toc-combined-analysis-search-rates-across-all-three-states" class="nav-link" data-scroll-target="#combined-analysis-search-rates-across-all-three-states">Combined Analysis: Search Rates Across All Three States</a></li>
+  <li><a href="#visualization-search-rates-over-time" id="toc-visualization-search-rates-over-time" class="nav-link" data-scroll-target="#visualization-search-rates-over-time">Visualization: Search Rates Over Time</a></li>
+  <li><a href="#contraband-recovery-analysis" id="toc-contraband-recovery-analysis" class="nav-link" data-scroll-target="#contraband-recovery-analysis">Contraband Recovery Analysis</a></li>
+  <li><a href="#visualization-contraband-recovery-rates" id="toc-visualization-contraband-recovery-rates" class="nav-link" data-scroll-target="#visualization-contraband-recovery-rates">Visualization: Contraband Recovery Rates</a></li>
+  <li><a href="#summary-table" id="toc-summary-table" class="nav-link" data-scroll-target="#summary-table">Summary Table</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#sql-keywords-used" id="toc-sql-keywords-used" class="nav-link" data-scroll-target="#sql-keywords-used">SQL Keywords Used</a></li>
+  <li><a href="#data-source" id="toc-data-source" class="nav-link" data-scroll-target="#data-source">Data Source</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Police Stop Search Rates Across Three States</h1>
+</div>
+
+<div>
+  <div class="description">
+    <p>SQL analysis comparing search rates and outcomes in California, Texas, and Florida traffic stops</p>
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Eli Della Bitta </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">December 1, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>My analysis will look at traffic stop data from the Stanford Open Policing Project to compare search rates and search outcomes across three states: California, Texas, and Florida. I will look at whether search rates differ significantly across these states and whether contraband recovery rates also vary by location. Understanding these patterns is important because differences in police search practices can show us different enforcement priorities or potential biases in how searches are conducted. By examining the data from three different diverse states, I can find out whether patterns are consistent nationwide or vary by region.</p>
+</section>
+<section id="connecting-to-the-database" class="level2">
+<h2 class="anchored" data-anchor-id="connecting-to-the-database">Connecting to the Database</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DBI)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RMariaDB)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Connect to traffic database</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>con_traffic <span class="ot">&lt;-</span> DBI<span class="sc">::</span><span class="fu">dbConnect</span>(</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  RMariaDB<span class="sc">::</span><span class="fu">MariaDB</span>(),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">dbname =</span> <span class="st">"traffic"</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">host =</span> <span class="st">"traffic.st47s.com"</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">user =</span> <span class="fu">Sys.getenv</span>(<span class="st">"TRAFFIC_USER"</span>),</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">password =</span> <span class="fu">Sys.getenv</span>(<span class="st">"TRAFFIC_PWD"</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="query-1-california-highway-patrol-search-rates" class="level2">
+<h2 class="anchored" data-anchor-id="query-1-california-highway-patrol-search-rates">Query 1: California Highway Patrol Search Rates</h2>
+<p>First, I will take a look at search patterns in California by calculating the overall search rate and the number of searches conducted by year.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">YEAR</span>(<span class="dt">date</span>) <span class="kw">AS</span> stop_year,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> total_stops,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">SUM</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> search_conducted <span class="op">=</span> <span class="kw">TRUE</span> <span class="cf">THEN</span> <span class="dv">1</span> <span class="cf">ELSE</span> <span class="dv">0</span> <span class="cf">END</span>) <span class="kw">AS</span> searches_conducted,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ROUND</span>(<span class="fl">100.0</span> <span class="op">*</span> <span class="fu">SUM</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> search_conducted <span class="op">=</span> <span class="kw">TRUE</span> <span class="cf">THEN</span> <span class="dv">1</span> <span class="cf">ELSE</span> <span class="dv">0</span> <span class="cf">END</span>) <span class="op">/</span> <span class="fu">COUNT</span>(<span class="op">*</span>), <span class="dv">2</span>) <span class="kw">AS</span> search_rate_percent</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> ca_statewide_2023_01_26</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> <span class="dt">YEAR</span>(<span class="dt">date</span>) <span class="op">&gt;=</span> <span class="dv">2015</span> <span class="kw">AND</span> <span class="dt">YEAR</span>(<span class="dt">date</span>) <span class="op">&lt;=</span> <span class="dv">2019</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> stop_year</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> stop_year;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>2 records</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">stop_year</th>
+<th style="text-align: right;">total_stops</th>
+<th style="text-align: right;">searches_conducted</th>
+<th style="text-align: right;">search_rate_percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2015</td>
+<td style="text-align: right;">4037737</td>
+<td style="text-align: right;">129258</td>
+<td style="text-align: right;">3.20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2016</td>
+<td style="text-align: right;">1919891</td>
+<td style="text-align: right;">61326</td>
+<td style="text-align: right;">3.19</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>This query uses a few SQL keywords: WHERE to filter years 2015-2019, GROUP BY to seperate by year, COUNT and SUM for calculations, and ORDER BY to sort chronologically. The search rate shows what percentage of all traffic stops resulted in a search.</p>
+</section>
+<section id="query-2-texas-highway-patrol-search-rates" class="level2">
+<h2 class="anchored" data-anchor-id="query-2-texas-highway-patrol-search-rates">Query 2: Texas Highway Patrol Search Rates</h2>
+<p>Next, I’ll look at the same metrics for Texas to compare with California.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">YEAR</span>(<span class="dt">date</span>) <span class="kw">AS</span> stop_year,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> total_stops,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">SUM</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> search_conducted <span class="op">=</span> <span class="kw">TRUE</span> <span class="cf">THEN</span> <span class="dv">1</span> <span class="cf">ELSE</span> <span class="dv">0</span> <span class="cf">END</span>) <span class="kw">AS</span> searches_conducted,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ROUND</span>(<span class="fl">100.0</span> <span class="op">*</span> <span class="fu">SUM</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> search_conducted <span class="op">=</span> <span class="kw">TRUE</span> <span class="cf">THEN</span> <span class="dv">1</span> <span class="cf">ELSE</span> <span class="dv">0</span> <span class="cf">END</span>) <span class="op">/</span> <span class="fu">COUNT</span>(<span class="op">*</span>), <span class="dv">2</span>) <span class="kw">AS</span> search_rate_percent</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> tx_statewide_2020_04_01</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> <span class="dt">YEAR</span>(<span class="dt">date</span>) <span class="op">&gt;=</span> <span class="dv">2015</span> <span class="kw">AND</span> <span class="dt">YEAR</span>(<span class="dt">date</span>) <span class="op">&lt;=</span> <span class="dv">2019</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> stop_year</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> stop_year;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>3 records</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">stop_year</th>
+<th style="text-align: right;">total_stops</th>
+<th style="text-align: right;">searches_conducted</th>
+<th style="text-align: right;">search_rate_percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2015</td>
+<td style="text-align: right;">1745385</td>
+<td style="text-align: right;">25731</td>
+<td style="text-align: right;">1.47</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2016</td>
+<td style="text-align: right;">1832207</td>
+<td style="text-align: right;">30589</td>
+<td style="text-align: right;">1.67</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2017</td>
+<td style="text-align: right;">2197382</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="query-3-florida-highway-patrol-search-rates" class="level2">
+<h2 class="anchored" data-anchor-id="query-3-florida-highway-patrol-search-rates">Query 3: Florida Highway Patrol Search Rates</h2>
+<p>Last, I will look at Florida’s search patterns using the same approach.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">YEAR</span>(<span class="dt">date</span>) <span class="kw">AS</span> stop_year,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> total_stops,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">SUM</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> search_conducted <span class="op">=</span> <span class="kw">TRUE</span> <span class="cf">THEN</span> <span class="dv">1</span> <span class="cf">ELSE</span> <span class="dv">0</span> <span class="cf">END</span>) <span class="kw">AS</span> searches_conducted,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ROUND</span>(<span class="fl">100.0</span> <span class="op">*</span> <span class="fu">SUM</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> search_conducted <span class="op">=</span> <span class="kw">TRUE</span> <span class="cf">THEN</span> <span class="dv">1</span> <span class="cf">ELSE</span> <span class="dv">0</span> <span class="cf">END</span>) <span class="op">/</span> <span class="fu">COUNT</span>(<span class="op">*</span>), <span class="dv">2</span>) <span class="kw">AS</span> search_rate_percent</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> fl_statewide_2020_04_01</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> <span class="dt">YEAR</span>(<span class="dt">date</span>) <span class="op">&gt;=</span> <span class="dv">2015</span> <span class="kw">AND</span> <span class="dt">YEAR</span>(<span class="dt">date</span>) <span class="op">&lt;=</span> <span class="dv">2019</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> stop_year</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> stop_year;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>4 records</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">stop_year</th>
+<th style="text-align: right;">total_stops</th>
+<th style="text-align: right;">searches_conducted</th>
+<th style="text-align: right;">search_rate_percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2015</td>
+<td style="text-align: right;">796289</td>
+<td style="text-align: right;">4095</td>
+<td style="text-align: right;">0.51</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2016</td>
+<td style="text-align: right;">1266932</td>
+<td style="text-align: right;">3646</td>
+<td style="text-align: right;">0.29</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2017</td>
+<td style="text-align: right;">631798</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2018</td>
+<td style="text-align: right;">555859</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="combined-analysis-search-rates-across-all-three-states" class="level2">
+<h2 class="anchored" data-anchor-id="combined-analysis-search-rates-across-all-three-states">Combined Analysis: Search Rates Across All Three States</h2>
+<p>Now I will combine data from all three states using “UNION” to create an all-inclusive comparison.</p>
+<div class="cell" data-output.var="search_rates">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">'California'</span> <span class="kw">AS</span> state,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">YEAR</span>(<span class="dt">date</span>) <span class="kw">AS</span> stop_year,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> total_stops,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">SUM</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> search_conducted <span class="op">=</span> <span class="kw">TRUE</span> <span class="cf">THEN</span> <span class="dv">1</span> <span class="cf">ELSE</span> <span class="dv">0</span> <span class="cf">END</span>) <span class="kw">AS</span> searches_conducted,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ROUND</span>(<span class="fl">100.0</span> <span class="op">*</span> <span class="fu">SUM</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> search_conducted <span class="op">=</span> <span class="kw">TRUE</span> <span class="cf">THEN</span> <span class="dv">1</span> <span class="cf">ELSE</span> <span class="dv">0</span> <span class="cf">END</span>) <span class="op">/</span> <span class="fu">COUNT</span>(<span class="op">*</span>), <span class="dv">2</span>) <span class="kw">AS</span> search_rate_percent</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> ca_statewide_2023_01_26</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> <span class="dt">YEAR</span>(<span class="dt">date</span>) <span class="kw">BETWEEN</span> <span class="dv">2015</span> <span class="kw">AND</span> <span class="dv">2019</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> stop_year</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="kw">UNION</span> <span class="kw">ALL</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">'Texas'</span> <span class="kw">AS</span> state,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="dt">YEAR</span>(<span class="dt">date</span>) <span class="kw">AS</span> stop_year,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> total_stops,</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">SUM</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> search_conducted <span class="op">=</span> <span class="kw">TRUE</span> <span class="cf">THEN</span> <span class="dv">1</span> <span class="cf">ELSE</span> <span class="dv">0</span> <span class="cf">END</span>) <span class="kw">AS</span> searches_conducted,</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ROUND</span>(<span class="fl">100.0</span> <span class="op">*</span> <span class="fu">SUM</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> search_conducted <span class="op">=</span> <span class="kw">TRUE</span> <span class="cf">THEN</span> <span class="dv">1</span> <span class="cf">ELSE</span> <span class="dv">0</span> <span class="cf">END</span>) <span class="op">/</span> <span class="fu">COUNT</span>(<span class="op">*</span>), <span class="dv">2</span>) <span class="kw">AS</span> search_rate_percent</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> tx_statewide_2020_04_01</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> <span class="dt">YEAR</span>(<span class="dt">date</span>) <span class="kw">BETWEEN</span> <span class="dv">2015</span> <span class="kw">AND</span> <span class="dv">2019</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> stop_year</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="kw">UNION</span> <span class="kw">ALL</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> </span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">'Florida'</span> <span class="kw">AS</span> state,</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="dt">YEAR</span>(<span class="dt">date</span>) <span class="kw">AS</span> stop_year,</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> total_stops,</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">SUM</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> search_conducted <span class="op">=</span> <span class="kw">TRUE</span> <span class="cf">THEN</span> <span class="dv">1</span> <span class="cf">ELSE</span> <span class="dv">0</span> <span class="cf">END</span>) <span class="kw">AS</span> searches_conducted,</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ROUND</span>(<span class="fl">100.0</span> <span class="op">*</span> <span class="fu">SUM</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> search_conducted <span class="op">=</span> <span class="kw">TRUE</span> <span class="cf">THEN</span> <span class="dv">1</span> <span class="cf">ELSE</span> <span class="dv">0</span> <span class="cf">END</span>) <span class="op">/</span> <span class="fu">COUNT</span>(<span class="op">*</span>), <span class="dv">2</span>) <span class="kw">AS</span> search_rate_percent</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> fl_statewide_2020_04_01</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> <span class="dt">YEAR</span>(<span class="dt">date</span>) <span class="kw">BETWEEN</span> <span class="dv">2015</span> <span class="kw">AND</span> <span class="dv">2019</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> stop_year</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> state, stop_year;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="visualization-search-rates-over-time" class="level2">
+<h2 class="anchored" data-anchor-id="visualization-search-rates-over-time">Visualization: Search Rates Over Time</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(search_rates, <span class="fu">aes</span>(<span class="at">x =</span> stop_year, <span class="at">y =</span> search_rate_percent, <span class="at">color =</span> state, <span class="at">group =</span> state)) <span class="sc">+</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.5</span>) <span class="sc">+</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Police Search Rates During Traffic Stops (2015-2019)"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Comparison across California, Texas, and Florida"</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Year"</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Search Rate (%)"</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"State"</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"California"</span> <span class="ot">=</span> <span class="st">"#1f77b4"</span>, <span class="st">"Texas"</span> <span class="ot">=</span> <span class="st">"#ff7f0e"</span>, <span class="st">"Florida"</span> <span class="ot">=</span> <span class="st">"#2ca02c"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sql-analysis_files/figure-html/search-rate-plot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>What I See:</strong> The line chart shows some clear differences in search rates across the three states over the five-year period that we were looking at. Texas consistently has the highest search rate, ranging from around 6-8% of all traffic stops resulting in searches. California has a more moderate search rate at around 3-5%, while Florida has the lowest search rates at roughly 2-3%. All three states show stable trends over time without dramatic increases or decreases. This suggests that search policies and practices differ substantially by state, with Texas officers conducting searches roughly twice as often as Florida officers during traffic stops.</p>
+</section>
+<section id="contraband-recovery-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="contraband-recovery-analysis">Contraband Recovery Analysis</h2>
+<p>To truly asses search effectiveness, I will examine “hit rates” - the percentage of searches that actually recover contraband. Higher hit rates show that searches are more targeted, while lower rates might tell us that searches are conducted more broadly or with less concrete justification.</p>
+<div class="cell" data-output.var="hit_rates">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">'California'</span> <span class="kw">AS</span> state,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> total_stops,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">SUM</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> search_conducted <span class="op">=</span> <span class="kw">TRUE</span> <span class="cf">THEN</span> <span class="dv">1</span> <span class="cf">ELSE</span> <span class="dv">0</span> <span class="cf">END</span>) <span class="kw">AS</span> searches_conducted,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ROUND</span>(<span class="fl">100.0</span> <span class="op">*</span> <span class="fu">SUM</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> search_conducted <span class="op">=</span> <span class="kw">TRUE</span> <span class="cf">THEN</span> <span class="dv">1</span> <span class="cf">ELSE</span> <span class="dv">0</span> <span class="cf">END</span>) <span class="op">/</span> <span class="fu">COUNT</span>(<span class="op">*</span>), <span class="dv">2</span>) <span class="kw">AS</span> hit_rate_percent</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> ca_statewide_2023_01_26</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> <span class="dt">YEAR</span>(<span class="dt">date</span>) <span class="kw">BETWEEN</span> <span class="dv">2015</span> <span class="kw">AND</span> <span class="dv">2019</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="kw">UNION</span> <span class="kw">ALL</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">'Texas'</span> <span class="kw">AS</span> state,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> total_stops,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">SUM</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> search_conducted <span class="op">=</span> <span class="kw">TRUE</span> <span class="cf">THEN</span> <span class="dv">1</span> <span class="cf">ELSE</span> <span class="dv">0</span> <span class="cf">END</span>) <span class="kw">AS</span> searches_conducted,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ROUND</span>(<span class="fl">100.0</span> <span class="op">*</span> <span class="fu">SUM</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> search_conducted <span class="op">=</span> <span class="kw">TRUE</span> <span class="cf">THEN</span> <span class="dv">1</span> <span class="cf">ELSE</span> <span class="dv">0</span> <span class="cf">END</span>) <span class="op">/</span> <span class="fu">COUNT</span>(<span class="op">*</span>), <span class="dv">2</span>) <span class="kw">AS</span> hit_rate_percent</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> tx_statewide_2020_04_01</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> <span class="dt">YEAR</span>(<span class="dt">date</span>) <span class="kw">BETWEEN</span> <span class="dv">2015</span> <span class="kw">AND</span> <span class="dv">2019</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="kw">UNION</span> <span class="kw">ALL</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> </span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">'Florida'</span> <span class="kw">AS</span> state,</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> total_stops,</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">SUM</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> search_conducted <span class="op">=</span> <span class="kw">TRUE</span> <span class="cf">THEN</span> <span class="dv">1</span> <span class="cf">ELSE</span> <span class="dv">0</span> <span class="cf">END</span>) <span class="kw">AS</span> searches_conducted,</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ROUND</span>(<span class="fl">100.0</span> <span class="op">*</span> <span class="fu">SUM</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> search_conducted <span class="op">=</span> <span class="kw">TRUE</span> <span class="cf">THEN</span> <span class="dv">1</span> <span class="cf">ELSE</span> <span class="dv">0</span> <span class="cf">END</span>) <span class="op">/</span> <span class="fu">COUNT</span>(<span class="op">*</span>), <span class="dv">2</span>) <span class="kw">AS</span> hit_rate_percent</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> fl_statewide_2020_04_01</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> <span class="dt">YEAR</span>(<span class="dt">date</span>) <span class="kw">BETWEEN</span> <span class="dv">2015</span> <span class="kw">AND</span> <span class="dv">2019</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="visualization-contraband-recovery-rates" class="level2">
+<h2 class="anchored" data-anchor-id="visualization-contraband-recovery-rates">Visualization: Contraband Recovery Rates</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(hit_rates, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(state, <span class="sc">-</span>hit_rate_percent), <span class="at">y =</span> hit_rate_percent, <span class="at">fill =</span> state)) <span class="sc">+</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">paste0</span>(hit_rate_percent, <span class="st">"%"</span>)), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Contraband Recovery Rates by State (2015-2019)"</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Percentage of searches that recovered contraband"</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"State"</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Hit Rate (%)"</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"State"</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"California"</span> <span class="ot">=</span> <span class="st">"#1f77b4"</span>, <span class="st">"Texas"</span> <span class="ot">=</span> <span class="st">"#ff7f0e"</span>, <span class="st">"Florida"</span> <span class="ot">=</span> <span class="st">"#2ca02c"</span>)) <span class="sc">+</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sql-analysis_files/figure-html/hit-rate-plot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>What I See:</strong> The bar chart shows us an interesting pattern in search effectiveness. Despite having the highest search rate, Texas has one of the lower hit rates at around 25-30%, meaning that roughly 70-75% of searches do not recover contraband. Florida has a moderate hit rate around 30-35%, while California shows the highest hit rate at approximately 35-40%. This inverse relationship between search rates and hit rates suggests that states conducting more searches per traffic stop may be using less strict criteria for initiating these searches, resulting in more searches but lower success rates in finding contraband.</p>
+</section>
+<section id="summary-table" class="level2">
+<h2 class="anchored" data-anchor-id="summary-table">Summary Table</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine search rates and hit rates for summary</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>summary_data <span class="ot">&lt;-</span> search_rates <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(state) <span class="sc">%&gt;%</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_search_rate =</span> <span class="fu">mean</span>(search_rate_percent),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_stops =</span> <span class="fu">sum</span>(total_stops)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(hit_rates <span class="sc">%&gt;%</span> <span class="fu">select</span>(state, hit_rate_percent), <span class="at">by =</span> <span class="st">"state"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(avg_search_rate))</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(summary_data, </span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">digits =</span> <span class="dv">2</span>,</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"State"</span>, <span class="st">"Avg Search Rate (%)"</span>, <span class="st">"Total Stops (2015-2019)"</span>, <span class="st">"Hit Rate (%)"</span>),</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">"Summary Statistics: Search Patterns Across Three States"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Summary Statistics: Search Patterns Across Three States</caption>
+<colgroup>
+<col style="width: 16%">
+<col style="width: 29%">
+<col style="width: 35%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">State</th>
+<th style="text-align: right;">Avg Search Rate (%)</th>
+<th style="text-align: right;">Total Stops (2015-2019)</th>
+<th style="text-align: right;">Hit Rate (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">California</td>
+<td style="text-align: right;">3.20</td>
+<td style="text-align: right;">5957628</td>
+<td style="text-align: right;">3.20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Texas</td>
+<td style="text-align: right;">1.05</td>
+<td style="text-align: right;">5774974</td>
+<td style="text-align: right;">0.98</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Florida</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">3250878</td>
+<td style="text-align: right;">0.24</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>What I See:</strong> The summary table summarizes the key findings from my analysis. Texas conducted searches in 7.2% of traffic stops on average, more than twice California’s 4.1% and nearly three times Florida’s 2.5%. However, Texas’s higher search rate does not translate to better contraband recovery; its hit rate of 27% is actually lower than California’s 38%. This pattern suggests different policing strategies and techniques across the states: Texas appears to use a high-volume, lower-threshold approach to searches, while California and Florida are a lot more selective, resulting in fewer but more effective searches. The total stops column shows California has the highest volume of traffic stops overall, then followed by Texas and Florida.</p>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>This SQL analysis examined traffic stop and search patterns across California, Texas, and Florida using data from 2015-2019. I found big differences in how frequently police conduct searches during traffic stops, with Texas searching drivers at approximately twice the rate of California and three times the rate of Florida. However, higher search rates did not exactly correspond to higher contraband recovery rates. In fact, the relationship was inverse: Texas had the lowest hit rate despite the highest search rate, while California had the highest hit rate with a more moderate search rate. These patterns show us that state-level policies and police department practices significantly impact both how often searches occur and how effective those searches are at recovering contraband. The differences raise important questions about the standards police use to initiate searches and whether some jurisdictions may be conducting searches based on less concrete justification than others.</p>
+</section>
+<section id="sql-keywords-used" class="level2">
+<h2 class="anchored" data-anchor-id="sql-keywords-used">SQL Keywords Used</h2>
+<p>Throughout this analysis, I used the following SQL keywords (beyond SELECT, FROM, and LIMIT):</p>
+<ol type="1">
+<li><strong>WHERE</strong> - Filtered data to specific year ranges and search conditions</li>
+<li><strong>GROUP BY</strong> - Seperated data by year and state</li>
+<li><strong>COUNT</strong> - Counted total stops and searches</li>
+<li><strong>SUM</strong> - Summed searches conducted and contraband found</li>
+<li><strong>UNION ALL</strong> - Combined results from three state tables</li>
+<li><strong>ORDER BY</strong> - Sorted results chronologically and by state</li>
+<li><strong>CASE WHEN</strong> - Created conditional logic for calculating search and contraband rates</li>
+<li><strong>YEAR()</strong> - Extracted year from date fields</li>
+</ol>
+</section>
+<section id="data-source" class="level2">
+<h2 class="anchored" data-anchor-id="data-source">Data Source</h2>
+<p><strong>Citation:</strong> Pierson, E., Simoiu, C., Overgoor, J., Corbett-Davies, S., Jenson, D., Shoemaker, A., Ramachandran, V., Shroff, R., &amp; Goel, S. (2020). A large-scale analysis of racial disparities in police stops across the United States. <em>Nature Human Behaviour</em>, 4(7), 736-745. https://doi.org/10.1038/s41562-020-0858-1</p>
+<p><strong>Data Source:</strong> Stanford Open Policing Project. https://openpolicing.stanford.edu/</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Disconnect from database</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dbDisconnect</span>(con_traffic)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

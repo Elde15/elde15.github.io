@@ -20,6 +20,8 @@ website:
             href: simulation-study.html
           - text: "Ethics Analysis"
             href: ethics-analysis.html
+          - text: "SQL Analysis"
+            href: sql-analysis.html
 
 format:
   html:

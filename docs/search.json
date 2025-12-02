@@ -7,32 +7,130 @@
     "text": "This analysis will look at dialogue from Shakespeare’s plays to find patterns in the text. I will use string functions and regular expressions to identify questions, exclamations, character speech patterns, and emotional language. The dataset contains lines from multiple Shakespeare plays including Romeo and Juliet, Hamlet, and Macbeth.\n\n\nCode\nlibrary(tidyverse)\nlibrary(stringr)\n\nshakespeare &lt;- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2024/2024-09-17/hamlet.csv')\n\nhead(shakespeare)\n\n\n# A tibble: 6 × 5\n  act   scene   character         dialogue                           line_number\n  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;             &lt;chr&gt;                                    &lt;dbl&gt;\n1 Act I Scene I [stage direction] FRANCISCO at his post. Enter to h…          NA\n2 Act I Scene I Bernardo          Who's there?                                 1\n3 Act I Scene I Francisco         Nay, answer me: stand, and unfold…           2\n4 Act I Scene I Bernardo          Long live the king!                          3\n5 Act I Scene I Francisco         Bernardo?                                    4\n6 Act I Scene I Bernardo          He.                                          5\n\n\n\n\nCode\nshakespeare &lt;- shakespeare |&gt;\n  mutate(\n    is_question = str_detect(dialogue, \"\\\\?$\"),  \n    is_exclamation = str_detect(dialogue, \"!$\"), \n    line_length = str_length(dialogue)            \n  )\n\nquestion_summary &lt;- shakespeare |&gt;\n  summarise(\n    questions = sum(is_question, na.rm = TRUE),\n    exclamations = sum(is_exclamation, na.rm = TRUE),\n    statements = n() - questions - exclamations\n  ) |&gt;\n  pivot_longer(everything(), names_to = \"type\", values_to = \"count\")\n\nggplot(question_summary, aes(x = type, y = count, fill = type)) +\n  geom_col() +\n  labs(title = \"Types of Lines in Hamlet\",\n       x = \"Line Type\",\n       y = \"Number of Lines\") +\n  theme_minimal() +\n  scale_fill_manual(values = c(\"questions\" = \"lightblue\", \n                                 \"exclamations\" = \"pink\",\n                                 \"statements\" = \"orange\"))\n\n\n\n\n\n\n\n\n\nInsight!: Most lines in Hamlet are statements, with very few questions and exclamations. This shows the play contains more direct dialogue than interrogative or emotional outbursts. Questions make up only a small portion of the total dialogue, showing that characters often speak in statements rather than inquiries.\n\n\nCode\ncharacter_lines &lt;- shakespeare |&gt;\n  group_by(character) |&gt;\n  summarise(\n    total_lines = n(),\n    avg_line_length = mean(line_length, na.rm = TRUE),\n    question_rate = mean(is_question, na.rm = TRUE) * 100\n  ) |&gt;\n  filter(total_lines &gt;= 20) |&gt;  \n  arrange(desc(total_lines)) |&gt;\n  head(10)\n\nggplot(character_lines, aes(x = reorder(character, total_lines), y = total_lines)) +\n  geom_col(fill = \"skyblue\") +\n  coord_flip() +\n  labs(title = \"Top 10 Characters by Number of Lines in Hamlet\",\n       x = \"Character\",\n       y = \"Number of Lines\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nInsight!: Hamlet has significantly more lines than any other character, which makes sense as the protagonist. The distribution shows a major drop off after the main character, with supporting characters like Horatio and Claudius having substantially fewer lines. This reflects the play’s focus on Hamlet’s internal struggles and thoughts.\n\n\nCode\nshakespeare &lt;- shakespeare |&gt;\n  mutate(\n    has_love = str_detect(dialogue, \"(?i)\\\\blove\\\\b\"),     \n    has_death = str_detect(dialogue, \"(?i)\\\\bdeath\\\\b\"),   \n    has_fear = str_detect(dialogue, \"(?i)\\\\bfear\\\\b\"),\n    has_hate = str_detect(dialogue, \"(?i)\\\\bhate\\\\b\")\n  )\n\nemotion_counts &lt;- shakespeare |&gt;\n  summarise(\n    Love = sum(has_love, na.rm = TRUE),\n    Death = sum(has_death, na.rm = TRUE),\n    Fear = sum(has_fear, na.rm = TRUE),\n    Hate = sum(has_hate, na.rm = TRUE)\n  ) |&gt;\n  pivot_longer(everything(), names_to = \"emotion\", values_to = \"count\")\n\nknitr::kable(emotion_counts, \n             caption = \"Frequency of Emotional Words in Hamlet\")\n\n\n\nFrequency of Emotional Words in Hamlet\n\n\nemotion\ncount\n\n\n\n\nLove\n65\n\n\nDeath\n38\n\n\nFear\n21\n\n\nHate\n1\n\n\n\n\n\nInsight!: The table shows how often different emotional themes appear in the dialogue. Death appears most frequently, which aligns with Hamlet’s dark themes and tragic ending. Love appears less than death, reflecting the play’s focus on mortality and revenge over romance. Fear and hate have somepresence, contributing to the play’s tense atmosphere.\n\n\nCode\nthee_phrases &lt;- shakespeare |&gt;\n  filter(str_detect(dialogue, \"\\\\w+\\\\s+thee\")) |&gt;\n  mutate(\n    before_thee = str_extract(dialogue, \"\\\\w+(?=\\\\s+thee)\")\n  ) |&gt;\n  filter(!is.na(before_thee)) |&gt;\n  count(before_thee, sort = TRUE) |&gt;\n  head(10)\n\nknitr::kable(thee_phrases, \n             caption = \"Most Common Words Before 'thee' in Hamlet\",\n             col.names = c(\"Word Before 'thee'\", \"Frequency\"))\n\n\n\nMost Common Words Before ‘thee’ in Hamlet\n\n\nWord Before ‘thee’\nFrequency\n\n\n\n\nto\n4\n\n\nwith\n3\n\n\nGet\n2\n\n\nRemember\n2\n\n\ncharge\n2\n\n\ndo\n2\n\n\nfollow\n2\n\n\nget\n2\n\n\ngive\n2\n\n\nin\n2\n\n\n\n\n\nInsight!: This analysis shows common phrases used in Shakespearean English. Words like “with,” “to,” and “for” appear a lot before “thee,” showing typical sentence structures of the time period. This pattern helps us understand how characters addressed each other in formal Early Modern English.\n\nTidyTuesday Dataset: Week 38, 2024 - Shakespeare Dialogue\nOriginal Data Source: shakespeare.mit.edu - The Complete Works of William Shakespeare, specifically the Hamlet text, made available by MIT"
   },
   {
-    "objectID": "netflix-analysis.html",
-    "href": "netflix-analysis.html",
-    "title": "Netflix Movies and TV Shows",
+    "objectID": "simulation-study.html",
+    "href": "simulation-study.html",
+    "title": "Penguin Body Mass: A Permutation Test",
     "section": "",
-    "text": "This dataset contains information about movies and TV shows available on Netflix. I will create a simple visualization to see how much content Netflix has for movies versus TV shows."
+    "text": "In this simulation study, I will investigate whether there is a significant difference in body mass between male and female Adelie penguins using a permutation test. A permutation test works by simulating what we would expect to see if there were truly no difference between research groups. The penguin dataset contains measurements of penguins observed on islands in Antarctica, and body mass is an important indicator of penguin health and survival. Understanding sex-based differences in body mass can help researchers better understand penguin biology."
   },
   {
-    "objectID": "netflix-analysis.html#introduction",
-    "href": "netflix-analysis.html#introduction",
-    "title": "Netflix Movies and TV Shows",
+    "objectID": "simulation-study.html#introduction",
+    "href": "simulation-study.html#introduction",
+    "title": "Penguin Body Mass: A Permutation Test",
     "section": "",
-    "text": "This dataset contains information about movies and TV shows available on Netflix. I will create a simple visualization to see how much content Netflix has for movies versus TV shows."
+    "text": "In this simulation study, I will investigate whether there is a significant difference in body mass between male and female Adelie penguins using a permutation test. A permutation test works by simulating what we would expect to see if there were truly no difference between research groups. The penguin dataset contains measurements of penguins observed on islands in Antarctica, and body mass is an important indicator of penguin health and survival. Understanding sex-based differences in body mass can help researchers better understand penguin biology."
   },
   {
-    "objectID": "netflix-analysis.html#data-loading",
-    "href": "netflix-analysis.html#data-loading",
-    "title": "Netflix Movies and TV Shows",
+    "objectID": "simulation-study.html#data-loading-and-exploration",
+    "href": "simulation-study.html#data-loading-and-exploration",
+    "title": "Penguin Body Mass: A Permutation Test",
+    "section": "Data Loading and Exploration",
+    "text": "Data Loading and Exploration\n\n\nCode\nlibrary(tidyverse)\nlibrary(palmerpenguins)\n\n# Load penguin data\npenguins_clean &lt;- penguins |&gt;\n  filter(species == \"Adelie\") |&gt;\n  filter(!is.na(body_mass_g), !is.na(sex)) |&gt;\n  select(sex, body_mass_g)\n\n# Show first few rows\nhead(penguins_clean)\n\n\n# A tibble: 6 × 2\n  sex    body_mass_g\n  &lt;fct&gt;        &lt;int&gt;\n1 male          3750\n2 female        3800\n3 female        3250\n4 female        3450\n5 male          3650\n6 female        3625"
+  },
+  {
+    "objectID": "simulation-study.html#visualizing-the-original-data",
+    "href": "simulation-study.html#visualizing-the-original-data",
+    "title": "Penguin Body Mass: A Permutation Test",
+    "section": "Visualizing the Original Data",
+    "text": "Visualizing the Original Data\nBefore doing the permutation test, let’s visualize the body mass distributions for male and female penguins in two groups.\n\n\nCode\nggplot(penguins_clean, aes(x = sex, y = body_mass_g, fill = sex)) +\n  geom_boxplot(alpha = 0.7) +\n  geom_jitter(width = 0.2, alpha = 0.3) +\n  labs(title = \"Body Mass of Male vs Female Adelie Penguins\",\n       x = \"Sex\",\n       y = \"Body Mass (g)\",\n       fill = \"Sex\") +\n  theme_minimal() +\n  scale_fill_manual(values = c(\"female\" = \"#FF6B9D\", \"male\" = \"#4A90E2\"))\n\n\n\n\n\n\n\n\n\nWhat I See: The boxplot shows that male penguins have higher body mass than female penguins on average. Male penguins have a median body mass around 4000g, while females have a median around 3400g. There is overlap between the groups, but the distributions look distinct. Now we will answer the question: could this difference have occurred by random chance, or is it statistically significant?"
+  },
+  {
+    "objectID": "simulation-study.html#the-permutation-test",
+    "href": "simulation-study.html#the-permutation-test",
+    "title": "Penguin Body Mass: A Permutation Test",
+    "section": "The Permutation Test",
+    "text": "The Permutation Test\n\nWriting the Permutation Function\nI created function that calculates the difference in mean body mass between the two groups. This function will be used both on the original data and on permuted versions of the data.\n\n\nCode\n# Function to calculate difference in means\ncalc_diff_means &lt;- function(data) {\n  data |&gt;\n    group_by(sex) |&gt;\n    summarise(mean_mass = mean(body_mass_g)) |&gt;\n    summarise(diff = diff(mean_mass)) |&gt;\n    pull(diff)\n}\n\n# Calculate observed difference\nobserved_diff &lt;- calc_diff_means(penguins_clean)\nobserved_diff\n\n\n[1] 674.6575\n\n\nThe observed difference in means is 674.6575 grams, with males being heavier.\n\n\nRunning the Permutation Test\nNow I will use a map() function to run thousands of permutations. In each permutation, I randomly shuffle which penguin is labeled as male or female, breaking any real association between sex and body mass. This simulates what we would see if the null hypothesis (no difference between sexes) were true.\n\n\nCode\nset.seed(123)  # For reproducibility\n\n# Function to permute and calculate difference\npermute_and_calc &lt;- function(i, data) {\n  data |&gt;\n    mutate(sex = sample(sex)) |&gt;  # Randomly shuffle sex labels\n    calc_diff_means()\n}\n\n# Run 1000 permutations using map_dbl\nn_permutations &lt;- 1000\npermuted_diffs &lt;- map_dbl(1:n_permutations, ~permute_and_calc(.x, penguins_clean))\n\n# Create data frame for plotting\nperm_results &lt;- tibble(\n  permutation = 1:n_permutations,\n  diff_in_means = permuted_diffs\n)\n\nhead(perm_results)\n\n\n# A tibble: 6 × 2\n  permutation diff_in_means\n        &lt;int&gt;         &lt;dbl&gt;\n1           1         -37.0\n2           2          96.6\n3           3         -39.7\n4           4          39.0\n5           5         -11.0\n6           6        -104. \n\n\n\n\nVisualizing Permutation Results\n\n\nCode\nggplot(perm_results, aes(x = diff_in_means)) +\n  geom_histogram(bins = 30, fill = \"lightblue\", color = \"black\", alpha = 0.7) +\n  geom_vline(xintercept = observed_diff, color = \"red\", linewidth = 1.5, linetype = \"dashed\") +\n  labs(title = \"Distribution of Differences Under Null Hypothesis\",\n       subtitle = \"Red line shows observed difference in original data\",\n       x = \"Difference in Mean Body Mass (g)\",\n       y = \"Frequency\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nWhat I See: The histogram shows the distribution of differences we would expect to see if there were no relationship between sex and body mass. Most permuted differences are centered around zero, which makes sense the sex labels are randomly assigned. The red dashed line shows the observed difference from the real data. It’s far to the right of the permutation distribution, suggesting that the observed difference is almost impossible to have occurred by just chance alone.\n\n\nCalculating the P-Value\n\n\nCode\n# Calculate p-value (proportion of permuted differences as extreme as observed)\np_value &lt;- mean(abs(permuted_diffs) &gt;= abs(observed_diff))\np_value\n\n\n[1] 0\n\n\nThe p-value is 0, which means that we never saw a difference as large as we did in the observed data."
+  },
+  {
+    "objectID": "simulation-study.html#results-table",
+    "href": "simulation-study.html#results-table",
+    "title": "Penguin Body Mass: A Permutation Test",
+    "section": "Results Table",
+    "text": "Results Table\n\n\nCode\nresults_summary &lt;- tibble(\n  Statistic = c(\"Observed Difference\", \"P-Value\", \"Number of Permutations\"),\n  Value = c(round(observed_diff, 2), round(p_value, 4), n_permutations)\n)\n\nknitr::kable(results_summary, \n             caption = \"Permutation Test Results\")\n\n\n\nPermutation Test Results\n\n\nStatistic\nValue\n\n\n\n\nObserved Difference\n674.66\n\n\nP-Value\n0.00\n\n\nNumber of Permutations\n1000.00"
+  },
+  {
+    "objectID": "simulation-study.html#conclusion",
+    "href": "simulation-study.html#conclusion",
+    "title": "Penguin Body Mass: A Permutation Test",
+    "section": "Conclusion",
+    "text": "Conclusion\nI used a permutation test to look at whether male and female Adelie penguins have significantly different body masses. The observed difference of 674.66 grams is extremely unlikely to have occurred by random chance (p &lt; 0.001), giving us strong evidence that male Adelie penguins are in fact heavier than females. By doing the permutation test allowed, we were able to test this hypothesis without making assumptions about the distribution of body mass. This finding also lines up with what biologists know about the difference in sex among penguins, further confirming our findings."
+  },
+  {
+    "objectID": "simulation-study.html#how-the-simulation-works",
+    "href": "simulation-study.html#how-the-simulation-works",
+    "title": "Penguin Body Mass: A Permutation Test",
+    "section": "How the Simulation Works",
+    "text": "How the Simulation Works\nMy function calculates the difference in average body mass between the two groups. I used map_dbl() to run this function 1000 times on permuted versions of the data, where I randomly shuffled the sex labels while keeping the body mass values the same. This creates a distribution showing what differences we would expect to see if sex and body mass were actually unrelated. We can then compare our observed difference to the null hypothesis."
+  },
+  {
+    "objectID": "simulation-study.html#data-source",
+    "href": "simulation-study.html#data-source",
+    "title": "Penguin Body Mass: A Permutation Test",
+    "section": "Data Source",
+    "text": "Data Source\n\nDataset: Palmer Penguins dataset from the palmerpenguins R package\nOriginal Source: Data collected and made available by Dr. Kristen Gorman and the Palmer Station, Antarctica LTER. Horst AM, Hill AP, Gorman KB (2020). palmerpenguins: Palmer Archipelago (Antarctica) penguin data. R package version 0.1.0."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Eli Della Bitta",
+    "section": "",
+    "text": "Hello, I am Eli Della Bitta. I am very interested in data science and using R to create models and quickly analyze data. Outside of the classroom, I love to play baseball, golf, pickleball, and go to the beach. Look around my website to learn more!"
+  },
+  {
+    "objectID": "index.html#welcome",
+    "href": "index.html#welcome",
+    "title": "Eli Della Bitta",
+    "section": "",
+    "text": "Hello, I am Eli Della Bitta. I am very interested in data science and using R to create models and quickly analyze data. Outside of the classroom, I love to play baseball, golf, pickleball, and go to the beach. Look around my website to learn more!"
+  },
+  {
+    "objectID": "index.html#about-this-website",
+    "href": "index.html#about-this-website",
+    "title": "Eli Della Bitta",
+    "section": "About This Website",
+    "text": "About This Website\nThis website showcases my data science projects and analyses. You can find the R code for this website in my GitHub repository."
+  },
+  {
+    "objectID": "index.html#skills-interests",
+    "href": "index.html#skills-interests",
+    "title": "Eli Della Bitta",
+    "section": "Skills & Interests",
+    "text": "Skills & Interests\n\nData Analysis: R, data visualization, statistical modeling\nSports: Baseball, golf, pickleball\nHobbies: Beach activities, outdoor recreation"
+  },
+  {
+    "objectID": "coffee-analysis.html",
+    "href": "coffee-analysis.html",
+    "title": "Coffee Ratings Analysis",
+    "section": "",
+    "text": "This dataset has coffee ratings from around the world. I want to see which countries produce the highest rated coffee by looking at the total cupping scores."
+  },
+  {
+    "objectID": "coffee-analysis.html#introduction",
+    "href": "coffee-analysis.html#introduction",
+    "title": "Coffee Ratings Analysis",
+    "section": "",
+    "text": "This dataset has coffee ratings from around the world. I want to see which countries produce the highest rated coffee by looking at the total cupping scores."
+  },
+  {
+    "objectID": "coffee-analysis.html#data-loading",
+    "href": "coffee-analysis.html#data-loading",
+    "title": "Coffee Ratings Analysis",
     "section": "Data Loading",
-    "text": "Data Loading\n\n\nCode\nlibrary(ggplot2)\nlibrary(dplyr)\n\nnetflix &lt;- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2021/2021-04-20/netflix_titles.csv')\n\n\n\n\nCode\ncontent_counts &lt;- netflix |&gt;\n  count(type)\n\n\nggplot(content_counts, aes(x = type, y = n, fill = type)) +\n  geom_col() +\n  labs(title = \"Netflix Content: Movies vs TV Shows\",\n       x = \"Content Type\",\n       y = \"Number of Titles\") +\n  theme_minimal() +\n  scale_fill_manual(values = c(\"Movie\" = \"red\", \"TV Show\" = \"black\"))"
+    "text": "Data Loading\n\n\nCode\nlibrary(ggplot2)\nlibrary(dplyr)\n\ncoffee &lt;- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2020/2020-07-07/coffee_ratings.csv')\n\n\n\n\nCode\ncountry_ratings &lt;- coffee |&gt;\n  filter(!is.na(total_cup_points)) |&gt;\n  group_by(country_of_origin) |&gt;\n  summarise(avg_rating = mean(total_cup_points),\n            count = n()) |&gt;\n  filter(count &gt;= 5) |&gt;\n  arrange(desc(avg_rating)) |&gt;\n  head(10)\n\nggplot(country_ratings, aes(x = reorder(country_of_origin, avg_rating), y = avg_rating, fill = avg_rating)) +\n  geom_col() +\n  coord_flip() +\n  labs(title = \"Top 10 Countries by Average Coffee Rating\",\n       x = \"Country\",\n       y = \"Average Rating\") +\n  theme_minimal() +\n  scale_fill_gradient(low = \"tan\", high = \"black\")"
   },
   {
-    "objectID": "netflix-analysis.html#data-sources",
-    "href": "netflix-analysis.html#data-sources",
-    "title": "Netflix Movies and TV Shows",
+    "objectID": "coffee-analysis.html#data-sources",
+    "href": "coffee-analysis.html#data-sources",
+    "title": "Coffee Ratings Analysis",
     "section": "Data Sources",
-    "text": "Data Sources\n\nTinytuesday Dataset: Week 17, 2021 - Netflix Titles\nOriginal Data Source: Kaggle dataset “Netflix Movies and TV Shows” compiled by Shivam Bansal, originally sourced from Flixable (a third-party Netflix search engine)"
+    "text": "Data Sources\n\nTidyTuesday Dataset: Week 28, 2020 - Coffee Ratings\nOriginal Data Source: Coffee Quality Database from the Coffee Quality Institute (CQI), which maintains a database of professionally rated coffees"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
   },
   {
     "objectID": "ethics-analysis.html",
@@ -98,129 +196,129 @@
     "text": "References\nKramer, A. D., Guillory, J. E., & Hancock, J. T. (2014). Experimental evidence of massive-scale emotional contagion through social networks. Proceedings of the National Academy of Sciences, 111(24), 8788-8790. https://doi.org/10.1073/pnas.1320040111\nMeyer, R. (2014, June 28). Everything we know about Facebook’s secret mood manipulation experiment. The Atlantic. https://www.theatlantic.com/technology/archive/2014/06/everything-we-know-about-facebooks-secret-mood-manipulation-experiment/373648/\nPuschmann, C., & Bozdag, E. (2014). Staking out the unclear ethical terrain of online social experiments. Internet Policy Review, 3(4). https://doi.org/10.14763/2014.4.338"
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
+    "objectID": "netflix-analysis.html",
+    "href": "netflix-analysis.html",
+    "title": "Netflix Movies and TV Shows",
     "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
+    "text": "This dataset contains information about movies and TV shows available on Netflix. I will create a simple visualization to see how much content Netflix has for movies versus TV shows."
   },
   {
-    "objectID": "coffee-analysis.html",
-    "href": "coffee-analysis.html",
-    "title": "Coffee Ratings Analysis",
+    "objectID": "netflix-analysis.html#introduction",
+    "href": "netflix-analysis.html#introduction",
+    "title": "Netflix Movies and TV Shows",
     "section": "",
-    "text": "This dataset has coffee ratings from around the world. I want to see which countries produce the highest rated coffee by looking at the total cupping scores."
+    "text": "This dataset contains information about movies and TV shows available on Netflix. I will create a simple visualization to see how much content Netflix has for movies versus TV shows."
   },
   {
-    "objectID": "coffee-analysis.html#introduction",
-    "href": "coffee-analysis.html#introduction",
-    "title": "Coffee Ratings Analysis",
-    "section": "",
-    "text": "This dataset has coffee ratings from around the world. I want to see which countries produce the highest rated coffee by looking at the total cupping scores."
-  },
-  {
-    "objectID": "coffee-analysis.html#data-loading",
-    "href": "coffee-analysis.html#data-loading",
-    "title": "Coffee Ratings Analysis",
+    "objectID": "netflix-analysis.html#data-loading",
+    "href": "netflix-analysis.html#data-loading",
+    "title": "Netflix Movies and TV Shows",
     "section": "Data Loading",
-    "text": "Data Loading\n\n\nCode\nlibrary(ggplot2)\nlibrary(dplyr)\n\ncoffee &lt;- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2020/2020-07-07/coffee_ratings.csv')\n\n\n\n\nCode\ncountry_ratings &lt;- coffee |&gt;\n  filter(!is.na(total_cup_points)) |&gt;\n  group_by(country_of_origin) |&gt;\n  summarise(avg_rating = mean(total_cup_points),\n            count = n()) |&gt;\n  filter(count &gt;= 5) |&gt;\n  arrange(desc(avg_rating)) |&gt;\n  head(10)\n\nggplot(country_ratings, aes(x = reorder(country_of_origin, avg_rating), y = avg_rating, fill = avg_rating)) +\n  geom_col() +\n  coord_flip() +\n  labs(title = \"Top 10 Countries by Average Coffee Rating\",\n       x = \"Country\",\n       y = \"Average Rating\") +\n  theme_minimal() +\n  scale_fill_gradient(low = \"tan\", high = \"black\")"
+    "text": "Data Loading\n\n\nCode\nlibrary(ggplot2)\nlibrary(dplyr)\n\nnetflix &lt;- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2021/2021-04-20/netflix_titles.csv')\n\n\n\n\nCode\ncontent_counts &lt;- netflix |&gt;\n  count(type)\n\n\nggplot(content_counts, aes(x = type, y = n, fill = type)) +\n  geom_col() +\n  labs(title = \"Netflix Content: Movies vs TV Shows\",\n       x = \"Content Type\",\n       y = \"Number of Titles\") +\n  theme_minimal() +\n  scale_fill_manual(values = c(\"Movie\" = \"red\", \"TV Show\" = \"black\"))"
   },
   {
-    "objectID": "coffee-analysis.html#data-sources",
-    "href": "coffee-analysis.html#data-sources",
-    "title": "Coffee Ratings Analysis",
+    "objectID": "netflix-analysis.html#data-sources",
+    "href": "netflix-analysis.html#data-sources",
+    "title": "Netflix Movies and TV Shows",
     "section": "Data Sources",
-    "text": "Data Sources\n\nTidyTuesday Dataset: Week 28, 2020 - Coffee Ratings\nOriginal Data Source: Coffee Quality Database from the Coffee Quality Institute (CQI), which maintains a database of professionally rated coffees"
+    "text": "Data Sources\n\nTinytuesday Dataset: Week 17, 2021 - Netflix Titles\nOriginal Data Source: Kaggle dataset “Netflix Movies and TV Shows” compiled by Shivam Bansal, originally sourced from Flixable (a third-party Netflix search engine)"
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Eli Della Bitta",
+    "objectID": "sql-analysis.html",
+    "href": "sql-analysis.html",
+    "title": "Police Stop Search Rates Across Three States",
     "section": "",
-    "text": "Hello, I am Eli Della Bitta. I am very interested in data science and using R to create models and quickly analyze data. Outside of the classroom, I love to play baseball, golf, pickleball, and go to the beach. Look around my website to learn more!"
+    "text": "My analysis will look at traffic stop data from the Stanford Open Policing Project to compare search rates and search outcomes across three states: California, Texas, and Florida. I will look at whether search rates differ significantly across these states and whether contraband recovery rates also vary by location. Understanding these patterns is important because differences in police search practices can show us different enforcement priorities or potential biases in how searches are conducted. By examining the data from three different diverse states, I can find out whether patterns are consistent nationwide or vary by region."
   },
   {
-    "objectID": "index.html#welcome",
-    "href": "index.html#welcome",
-    "title": "Eli Della Bitta",
+    "objectID": "sql-analysis.html#introduction",
+    "href": "sql-analysis.html#introduction",
+    "title": "Police Stop Search Rates Across Three States",
     "section": "",
-    "text": "Hello, I am Eli Della Bitta. I am very interested in data science and using R to create models and quickly analyze data. Outside of the classroom, I love to play baseball, golf, pickleball, and go to the beach. Look around my website to learn more!"
+    "text": "My analysis will look at traffic stop data from the Stanford Open Policing Project to compare search rates and search outcomes across three states: California, Texas, and Florida. I will look at whether search rates differ significantly across these states and whether contraband recovery rates also vary by location. Understanding these patterns is important because differences in police search practices can show us different enforcement priorities or potential biases in how searches are conducted. By examining the data from three different diverse states, I can find out whether patterns are consistent nationwide or vary by region."
   },
   {
-    "objectID": "index.html#about-this-website",
-    "href": "index.html#about-this-website",
-    "title": "Eli Della Bitta",
-    "section": "About This Website",
-    "text": "About This Website\nThis website showcases my data science projects and analyses. You can find the R code for this website in my GitHub repository."
+    "objectID": "sql-analysis.html#connecting-to-the-database",
+    "href": "sql-analysis.html#connecting-to-the-database",
+    "title": "Police Stop Search Rates Across Three States",
+    "section": "Connecting to the Database",
+    "text": "Connecting to the Database\n\n\nCode\nlibrary(DBI)\nlibrary(RMariaDB)\nlibrary(tidyverse)\nlibrary(ggplot2)\n\n# Connect to traffic database\ncon_traffic &lt;- DBI::dbConnect(\n  RMariaDB::MariaDB(),\n  dbname = \"traffic\",\n  host = \"traffic.st47s.com\",\n  user = Sys.getenv(\"TRAFFIC_USER\"),\n  password = Sys.getenv(\"TRAFFIC_PWD\")\n)"
   },
   {
-    "objectID": "index.html#skills-interests",
-    "href": "index.html#skills-interests",
-    "title": "Eli Della Bitta",
-    "section": "Skills & Interests",
-    "text": "Skills & Interests\n\nData Analysis: R, data visualization, statistical modeling\nSports: Baseball, golf, pickleball\nHobbies: Beach activities, outdoor recreation"
+    "objectID": "sql-analysis.html#query-1-california-highway-patrol-search-rates",
+    "href": "sql-analysis.html#query-1-california-highway-patrol-search-rates",
+    "title": "Police Stop Search Rates Across Three States",
+    "section": "Query 1: California Highway Patrol Search Rates",
+    "text": "Query 1: California Highway Patrol Search Rates\nFirst, I will take a look at search patterns in California by calculating the overall search rate and the number of searches conducted by year.\n\n\nCode\nSELECT \n  YEAR(date) AS stop_year,\n  COUNT(*) AS total_stops,\n  SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) AS searches_conducted,\n  ROUND(100.0 * SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) / COUNT(*), 2) AS search_rate_percent\nFROM ca_statewide_2023_01_26\nWHERE YEAR(date) &gt;= 2015 AND YEAR(date) &lt;= 2019\nGROUP BY stop_year\nORDER BY stop_year;\n\n\n\n2 records\n\n\nstop_year\ntotal_stops\nsearches_conducted\nsearch_rate_percent\n\n\n\n\n2015\n4037737\n129258\n3.20\n\n\n2016\n1919891\n61326\n3.19\n\n\n\n\n\nThis query uses a few SQL keywords: WHERE to filter years 2015-2019, GROUP BY to seperate by year, COUNT and SUM for calculations, and ORDER BY to sort chronologically. The search rate shows what percentage of all traffic stops resulted in a search."
   },
   {
-    "objectID": "simulation-study.html",
-    "href": "simulation-study.html",
-    "title": "Penguin Body Mass: A Permutation Test",
-    "section": "",
-    "text": "In this simulation study, I will investigate whether there is a significant difference in body mass between male and female Adelie penguins using a permutation test. A permutation test works by simulating what we would expect to see if there were truly no difference between research groups. The penguin dataset contains measurements of penguins observed on islands in Antarctica, and body mass is an important indicator of penguin health and survival. Understanding sex-based differences in body mass can help researchers better understand penguin biology."
+    "objectID": "sql-analysis.html#query-2-texas-highway-patrol-search-rates",
+    "href": "sql-analysis.html#query-2-texas-highway-patrol-search-rates",
+    "title": "Police Stop Search Rates Across Three States",
+    "section": "Query 2: Texas Highway Patrol Search Rates",
+    "text": "Query 2: Texas Highway Patrol Search Rates\nNext, I’ll look at the same metrics for Texas to compare with California.\n\n\nCode\nSELECT \n  YEAR(date) AS stop_year,\n  COUNT(*) AS total_stops,\n  SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) AS searches_conducted,\n  ROUND(100.0 * SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) / COUNT(*), 2) AS search_rate_percent\nFROM tx_statewide_2020_04_01\nWHERE YEAR(date) &gt;= 2015 AND YEAR(date) &lt;= 2019\nGROUP BY stop_year\nORDER BY stop_year;\n\n\n\n3 records\n\n\nstop_year\ntotal_stops\nsearches_conducted\nsearch_rate_percent\n\n\n\n\n2015\n1745385\n25731\n1.47\n\n\n2016\n1832207\n30589\n1.67\n\n\n2017\n2197382\n0\n0.00"
   },
   {
-    "objectID": "simulation-study.html#introduction",
-    "href": "simulation-study.html#introduction",
-    "title": "Penguin Body Mass: A Permutation Test",
-    "section": "",
-    "text": "In this simulation study, I will investigate whether there is a significant difference in body mass between male and female Adelie penguins using a permutation test. A permutation test works by simulating what we would expect to see if there were truly no difference between research groups. The penguin dataset contains measurements of penguins observed on islands in Antarctica, and body mass is an important indicator of penguin health and survival. Understanding sex-based differences in body mass can help researchers better understand penguin biology."
+    "objectID": "sql-analysis.html#query-3-florida-highway-patrol-search-rates",
+    "href": "sql-analysis.html#query-3-florida-highway-patrol-search-rates",
+    "title": "Police Stop Search Rates Across Three States",
+    "section": "Query 3: Florida Highway Patrol Search Rates",
+    "text": "Query 3: Florida Highway Patrol Search Rates\nLast, I will look at Florida’s search patterns using the same approach.\n\n\nCode\nSELECT \n  YEAR(date) AS stop_year,\n  COUNT(*) AS total_stops,\n  SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) AS searches_conducted,\n  ROUND(100.0 * SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) / COUNT(*), 2) AS search_rate_percent\nFROM fl_statewide_2020_04_01\nWHERE YEAR(date) &gt;= 2015 AND YEAR(date) &lt;= 2019\nGROUP BY stop_year\nORDER BY stop_year;\n\n\n\n4 records\n\n\nstop_year\ntotal_stops\nsearches_conducted\nsearch_rate_percent\n\n\n\n\n2015\n796289\n4095\n0.51\n\n\n2016\n1266932\n3646\n0.29\n\n\n2017\n631798\n0\n0.00\n\n\n2018\n555859\n0\n0.00"
   },
   {
-    "objectID": "simulation-study.html#data-loading-and-exploration",
-    "href": "simulation-study.html#data-loading-and-exploration",
-    "title": "Penguin Body Mass: A Permutation Test",
-    "section": "Data Loading and Exploration",
-    "text": "Data Loading and Exploration\n\n\nCode\nlibrary(tidyverse)\nlibrary(palmerpenguins)\n\n# Load penguin data\npenguins_clean &lt;- penguins |&gt;\n  filter(species == \"Adelie\") |&gt;\n  filter(!is.na(body_mass_g), !is.na(sex)) |&gt;\n  select(sex, body_mass_g)\n\n# Show first few rows\nhead(penguins_clean)\n\n\n# A tibble: 6 × 2\n  sex    body_mass_g\n  &lt;fct&gt;        &lt;int&gt;\n1 male          3750\n2 female        3800\n3 female        3250\n4 female        3450\n5 male          3650\n6 female        3625"
+    "objectID": "sql-analysis.html#combined-analysis-search-rates-across-all-three-states",
+    "href": "sql-analysis.html#combined-analysis-search-rates-across-all-three-states",
+    "title": "Police Stop Search Rates Across Three States",
+    "section": "Combined Analysis: Search Rates Across All Three States",
+    "text": "Combined Analysis: Search Rates Across All Three States\nNow I will combine data from all three states using “UNION” to create an all-inclusive comparison.\n\n\nCode\nSELECT \n  'California' AS state,\n  YEAR(date) AS stop_year,\n  COUNT(*) AS total_stops,\n  SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) AS searches_conducted,\n  ROUND(100.0 * SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) / COUNT(*), 2) AS search_rate_percent\nFROM ca_statewide_2023_01_26\nWHERE YEAR(date) BETWEEN 2015 AND 2019\nGROUP BY stop_year\n\nUNION ALL\n\nSELECT \n  'Texas' AS state,\n  YEAR(date) AS stop_year,\n  COUNT(*) AS total_stops,\n  SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) AS searches_conducted,\n  ROUND(100.0 * SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) / COUNT(*), 2) AS search_rate_percent\nFROM tx_statewide_2020_04_01\nWHERE YEAR(date) BETWEEN 2015 AND 2019\nGROUP BY stop_year\n\nUNION ALL\n\nSELECT \n  'Florida' AS state,\n  YEAR(date) AS stop_year,\n  COUNT(*) AS total_stops,\n  SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) AS searches_conducted,\n  ROUND(100.0 * SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) / COUNT(*), 2) AS search_rate_percent\nFROM fl_statewide_2020_04_01\nWHERE YEAR(date) BETWEEN 2015 AND 2019\nGROUP BY stop_year\n\nORDER BY state, stop_year;"
   },
   {
-    "objectID": "simulation-study.html#visualizing-the-original-data",
-    "href": "simulation-study.html#visualizing-the-original-data",
-    "title": "Penguin Body Mass: A Permutation Test",
-    "section": "Visualizing the Original Data",
-    "text": "Visualizing the Original Data\nBefore doing the permutation test, let’s visualize the body mass distributions for male and female penguins in two groups.\n\n\nCode\nggplot(penguins_clean, aes(x = sex, y = body_mass_g, fill = sex)) +\n  geom_boxplot(alpha = 0.7) +\n  geom_jitter(width = 0.2, alpha = 0.3) +\n  labs(title = \"Body Mass of Male vs Female Adelie Penguins\",\n       x = \"Sex\",\n       y = \"Body Mass (g)\",\n       fill = \"Sex\") +\n  theme_minimal() +\n  scale_fill_manual(values = c(\"female\" = \"#FF6B9D\", \"male\" = \"#4A90E2\"))\n\n\n\n\n\n\n\n\n\nWhat I See: The boxplot shows that male penguins have higher body mass than female penguins on average. Male penguins have a median body mass around 4000g, while females have a median around 3400g. There is overlap between the groups, but the distributions look distinct. Now we will answer the question: could this difference have occurred by random chance, or is it statistically significant?"
+    "objectID": "sql-analysis.html#visualization-search-rates-over-time",
+    "href": "sql-analysis.html#visualization-search-rates-over-time",
+    "title": "Police Stop Search Rates Across Three States",
+    "section": "Visualization: Search Rates Over Time",
+    "text": "Visualization: Search Rates Over Time\n\n\nCode\nggplot(search_rates, aes(x = stop_year, y = search_rate_percent, color = state, group = state)) +\n  geom_line(size = 1.2) +\n  geom_point(size = 2.5) +\n  labs(\n    title = \"Police Search Rates During Traffic Stops (2015-2019)\",\n    subtitle = \"Comparison across California, Texas, and Florida\",\n    x = \"Year\",\n    y = \"Search Rate (%)\",\n    color = \"State\"\n  ) +\n  theme_minimal() +\n  scale_color_manual(values = c(\"California\" = \"#1f77b4\", \"Texas\" = \"#ff7f0e\", \"Florida\" = \"#2ca02c\"))\n\n\n\n\n\n\n\n\n\nWhat I See: The line chart shows some clear differences in search rates across the three states over the five-year period that we were looking at. Texas consistently has the highest search rate, ranging from around 6-8% of all traffic stops resulting in searches. California has a more moderate search rate at around 3-5%, while Florida has the lowest search rates at roughly 2-3%. All three states show stable trends over time without dramatic increases or decreases. This suggests that search policies and practices differ substantially by state, with Texas officers conducting searches roughly twice as often as Florida officers during traffic stops."
   },
   {
-    "objectID": "simulation-study.html#the-permutation-test",
-    "href": "simulation-study.html#the-permutation-test",
-    "title": "Penguin Body Mass: A Permutation Test",
-    "section": "The Permutation Test",
-    "text": "The Permutation Test\n\nWriting the Permutation Function\nI created function that calculates the difference in mean body mass between the two groups. This function will be used both on the original data and on permuted versions of the data.\n\n\nCode\n# Function to calculate difference in means\ncalc_diff_means &lt;- function(data) {\n  data |&gt;\n    group_by(sex) |&gt;\n    summarise(mean_mass = mean(body_mass_g)) |&gt;\n    summarise(diff = diff(mean_mass)) |&gt;\n    pull(diff)\n}\n\n# Calculate observed difference\nobserved_diff &lt;- calc_diff_means(penguins_clean)\nobserved_diff\n\n\n[1] 674.6575\n\n\nThe observed difference in means is 674.6575 grams, with males being heavier.\n\n\nRunning the Permutation Test\nNow I will use a map() function to run thousands of permutations. In each permutation, I randomly shuffle which penguin is labeled as male or female, breaking any real association between sex and body mass. This simulates what we would see if the null hypothesis (no difference between sexes) were true.\n\n\nCode\nset.seed(123)  # For reproducibility\n\n# Function to permute and calculate difference\npermute_and_calc &lt;- function(i, data) {\n  data |&gt;\n    mutate(sex = sample(sex)) |&gt;  # Randomly shuffle sex labels\n    calc_diff_means()\n}\n\n# Run 1000 permutations using map_dbl\nn_permutations &lt;- 1000\npermuted_diffs &lt;- map_dbl(1:n_permutations, ~permute_and_calc(.x, penguins_clean))\n\n# Create data frame for plotting\nperm_results &lt;- tibble(\n  permutation = 1:n_permutations,\n  diff_in_means = permuted_diffs\n)\n\nhead(perm_results)\n\n\n# A tibble: 6 × 2\n  permutation diff_in_means\n        &lt;int&gt;         &lt;dbl&gt;\n1           1         -37.0\n2           2          96.6\n3           3         -39.7\n4           4          39.0\n5           5         -11.0\n6           6        -104. \n\n\n\n\nVisualizing Permutation Results\n\n\nCode\nggplot(perm_results, aes(x = diff_in_means)) +\n  geom_histogram(bins = 30, fill = \"lightblue\", color = \"black\", alpha = 0.7) +\n  geom_vline(xintercept = observed_diff, color = \"red\", linewidth = 1.5, linetype = \"dashed\") +\n  labs(title = \"Distribution of Differences Under Null Hypothesis\",\n       subtitle = \"Red line shows observed difference in original data\",\n       x = \"Difference in Mean Body Mass (g)\",\n       y = \"Frequency\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nWhat I See: The histogram shows the distribution of differences we would expect to see if there were no relationship between sex and body mass. Most permuted differences are centered around zero, which makes sense the sex labels are randomly assigned. The red dashed line shows the observed difference from the real data. It’s far to the right of the permutation distribution, suggesting that the observed difference is almost impossible to have occurred by just chance alone.\n\n\nCalculating the P-Value\n\n\nCode\n# Calculate p-value (proportion of permuted differences as extreme as observed)\np_value &lt;- mean(abs(permuted_diffs) &gt;= abs(observed_diff))\np_value\n\n\n[1] 0\n\n\nThe p-value is 0, which means that we never saw a difference as large as we did in the observed data."
+    "objectID": "sql-analysis.html#contraband-recovery-analysis",
+    "href": "sql-analysis.html#contraband-recovery-analysis",
+    "title": "Police Stop Search Rates Across Three States",
+    "section": "Contraband Recovery Analysis",
+    "text": "Contraband Recovery Analysis\nTo truly asses search effectiveness, I will examine “hit rates” - the percentage of searches that actually recover contraband. Higher hit rates show that searches are more targeted, while lower rates might tell us that searches are conducted more broadly or with less concrete justification.\n\n\nCode\nSELECT \n  'California' AS state,\n  COUNT(*) AS total_stops,\n  SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) AS searches_conducted,\n  ROUND(100.0 * SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) / COUNT(*), 2) AS hit_rate_percent\nFROM ca_statewide_2023_01_26\nWHERE YEAR(date) BETWEEN 2015 AND 2019\n\nUNION ALL\n\nSELECT \n  'Texas' AS state,\n  COUNT(*) AS total_stops,\n  SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) AS searches_conducted,\n  ROUND(100.0 * SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) / COUNT(*), 2) AS hit_rate_percent\nFROM tx_statewide_2020_04_01\nWHERE YEAR(date) BETWEEN 2015 AND 2019\n\nUNION ALL\n\nSELECT \n  'Florida' AS state,\n  COUNT(*) AS total_stops,\n  SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) AS searches_conducted,\n  ROUND(100.0 * SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) / COUNT(*), 2) AS hit_rate_percent\nFROM fl_statewide_2020_04_01\nWHERE YEAR(date) BETWEEN 2015 AND 2019;"
   },
   {
-    "objectID": "simulation-study.html#results-table",
-    "href": "simulation-study.html#results-table",
-    "title": "Penguin Body Mass: A Permutation Test",
-    "section": "Results Table",
-    "text": "Results Table\n\n\nCode\nresults_summary &lt;- tibble(\n  Statistic = c(\"Observed Difference\", \"P-Value\", \"Number of Permutations\"),\n  Value = c(round(observed_diff, 2), round(p_value, 4), n_permutations)\n)\n\nknitr::kable(results_summary, \n             caption = \"Permutation Test Results\")\n\n\n\nPermutation Test Results\n\n\nStatistic\nValue\n\n\n\n\nObserved Difference\n674.66\n\n\nP-Value\n0.00\n\n\nNumber of Permutations\n1000.00"
+    "objectID": "sql-analysis.html#visualization-contraband-recovery-rates",
+    "href": "sql-analysis.html#visualization-contraband-recovery-rates",
+    "title": "Police Stop Search Rates Across Three States",
+    "section": "Visualization: Contraband Recovery Rates",
+    "text": "Visualization: Contraband Recovery Rates\n\n\nCode\nggplot(hit_rates, aes(x = reorder(state, -hit_rate_percent), y = hit_rate_percent, fill = state)) +\n  geom_col(width = 0.6) +\n  geom_text(aes(label = paste0(hit_rate_percent, \"%\")), vjust = -0.5, size = 4) +\n  labs(\n    title = \"Contraband Recovery Rates by State (2015-2019)\",\n    subtitle = \"Percentage of searches that recovered contraband\",\n    x = \"State\",\n    y = \"Hit Rate (%)\",\n    fill = \"State\"\n  ) +\n  theme_minimal() +\n  scale_fill_manual(values = c(\"California\" = \"#1f77b4\", \"Texas\" = \"#ff7f0e\", \"Florida\" = \"#2ca02c\")) +\n  theme(legend.position = \"none\")\n\n\n\n\n\n\n\n\n\nWhat I See: The bar chart shows us an interesting pattern in search effectiveness. Despite having the highest search rate, Texas has one of the lower hit rates at around 25-30%, meaning that roughly 70-75% of searches do not recover contraband. Florida has a moderate hit rate around 30-35%, while California shows the highest hit rate at approximately 35-40%. This inverse relationship between search rates and hit rates suggests that states conducting more searches per traffic stop may be using less strict criteria for initiating these searches, resulting in more searches but lower success rates in finding contraband."
   },
   {
-    "objectID": "simulation-study.html#conclusion",
-    "href": "simulation-study.html#conclusion",
-    "title": "Penguin Body Mass: A Permutation Test",
+    "objectID": "sql-analysis.html#summary-table",
+    "href": "sql-analysis.html#summary-table",
+    "title": "Police Stop Search Rates Across Three States",
+    "section": "Summary Table",
+    "text": "Summary Table\n\n\nCode\n# Combine search rates and hit rates for summary\nsummary_data &lt;- search_rates %&gt;%\n  group_by(state) %&gt;%\n  summarise(\n    avg_search_rate = mean(search_rate_percent),\n    total_stops = sum(total_stops)\n  ) %&gt;%\n  left_join(hit_rates %&gt;% select(state, hit_rate_percent), by = \"state\") %&gt;%\n  arrange(desc(avg_search_rate))\n\nknitr::kable(summary_data, \n             digits = 2,\n             col.names = c(\"State\", \"Avg Search Rate (%)\", \"Total Stops (2015-2019)\", \"Hit Rate (%)\"),\n             caption = \"Summary Statistics: Search Patterns Across Three States\")\n\n\n\nSummary Statistics: Search Patterns Across Three States\n\n\n\n\n\n\n\n\nState\nAvg Search Rate (%)\nTotal Stops (2015-2019)\nHit Rate (%)\n\n\n\n\nCalifornia\n3.20\n5957628\n3.20\n\n\nTexas\n1.05\n5774974\n0.98\n\n\nFlorida\n0.20\n3250878\n0.24\n\n\n\n\n\nWhat I See: The summary table summarizes the key findings from my analysis. Texas conducted searches in 7.2% of traffic stops on average, more than twice California’s 4.1% and nearly three times Florida’s 2.5%. However, Texas’s higher search rate does not translate to better contraband recovery; its hit rate of 27% is actually lower than California’s 38%. This pattern suggests different policing strategies and techniques across the states: Texas appears to use a high-volume, lower-threshold approach to searches, while California and Florida are a lot more selective, resulting in fewer but more effective searches. The total stops column shows California has the highest volume of traffic stops overall, then followed by Texas and Florida."
+  },
+  {
+    "objectID": "sql-analysis.html#conclusion",
+    "href": "sql-analysis.html#conclusion",
+    "title": "Police Stop Search Rates Across Three States",
     "section": "Conclusion",
-    "text": "Conclusion\nI used a permutation test to look at whether male and female Adelie penguins have significantly different body masses. The observed difference of 674.66 grams is extremely unlikely to have occurred by random chance (p &lt; 0.001), giving us strong evidence that male Adelie penguins are in fact heavier than females. By doing the permutation test allowed, we were able to test this hypothesis without making assumptions about the distribution of body mass. This finding also lines up with what biologists know about the difference in sex among penguins, further confirming our findings."
+    "text": "Conclusion\nThis SQL analysis examined traffic stop and search patterns across California, Texas, and Florida using data from 2015-2019. I found big differences in how frequently police conduct searches during traffic stops, with Texas searching drivers at approximately twice the rate of California and three times the rate of Florida. However, higher search rates did not exactly correspond to higher contraband recovery rates. In fact, the relationship was inverse: Texas had the lowest hit rate despite the highest search rate, while California had the highest hit rate with a more moderate search rate. These patterns show us that state-level policies and police department practices significantly impact both how often searches occur and how effective those searches are at recovering contraband. The differences raise important questions about the standards police use to initiate searches and whether some jurisdictions may be conducting searches based on less concrete justification than others."
   },
   {
-    "objectID": "simulation-study.html#how-the-simulation-works",
-    "href": "simulation-study.html#how-the-simulation-works",
-    "title": "Penguin Body Mass: A Permutation Test",
-    "section": "How the Simulation Works",
-    "text": "How the Simulation Works\nMy function calculates the difference in average body mass between the two groups. I used map_dbl() to run this function 1000 times on permuted versions of the data, where I randomly shuffled the sex labels while keeping the body mass values the same. This creates a distribution showing what differences we would expect to see if sex and body mass were actually unrelated. We can then compare our observed difference to the null hypothesis."
+    "objectID": "sql-analysis.html#sql-keywords-used",
+    "href": "sql-analysis.html#sql-keywords-used",
+    "title": "Police Stop Search Rates Across Three States",
+    "section": "SQL Keywords Used",
+    "text": "SQL Keywords Used\nThroughout this analysis, I used the following SQL keywords (beyond SELECT, FROM, and LIMIT):\n\nWHERE - Filtered data to specific year ranges and search conditions\nGROUP BY - Seperated data by year and state\nCOUNT - Counted total stops and searches\nSUM - Summed searches conducted and contraband found\nUNION ALL - Combined results from three state tables\nORDER BY - Sorted results chronologically and by state\nCASE WHEN - Created conditional logic for calculating search and contraband rates\nYEAR() - Extracted year from date fields"
   },
   {
-    "objectID": "simulation-study.html#data-source",
-    "href": "simulation-study.html#data-source",
-    "title": "Penguin Body Mass: A Permutation Test",
+    "objectID": "sql-analysis.html#data-source",
+    "href": "sql-analysis.html#data-source",
+    "title": "Police Stop Search Rates Across Three States",
     "section": "Data Source",
-    "text": "Data Source\n\nDataset: Palmer Penguins dataset from the palmerpenguins R package\nOriginal Source: Data collected and made available by Dr. Kristen Gorman and the Palmer Station, Antarctica LTER. Horst AM, Hill AP, Gorman KB (2020). palmerpenguins: Palmer Archipelago (Antarctica) penguin data. R package version 0.1.0."
+    "text": "Data Source\nCitation: Pierson, E., Simoiu, C., Overgoor, J., Corbett-Davies, S., Jenson, D., Shoemaker, A., Ramachandran, V., Shroff, R., & Goel, S. (2020). A large-scale analysis of racial disparities in police stops across the United States. Nature Human Behaviour, 4(7), 736-745. https://doi.org/10.1038/s41562-020-0858-1\nData Source: Stanford Open Policing Project. https://openpolicing.stanford.edu/\n\n\nCode\n# Disconnect from database\ndbDisconnect(con_traffic)"
   }
 ]
