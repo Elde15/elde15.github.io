@@ -320,5 +320,159 @@
     "title": "Police Stop Search Rates Across Three States",
     "section": "Data Source",
     "text": "Data Source\nCitation: Pierson, E., Simoiu, C., Overgoor, J., Corbett-Davies, S., Jenson, D., Shoemaker, A., Ramachandran, V., Shroff, R., & Goel, S. (2020). A large-scale analysis of racial disparities in police stops across the United States. Nature Human Behaviour, 4(7), 736-745. https://doi.org/10.1038/s41562-020-0858-1\nData Source: Stanford Open Policing Project. https://openpolicing.stanford.edu/\n\n\nCode\n# Disconnect from database\ndbDisconnect(con_traffic)"
+  },
+  {
+    "objectID": "presentation.html#the-question",
+    "href": "presentation.html#the-question",
+    "title": "Police Search Practices Across Three States",
+    "section": "The Question",
+    "text": "The Question\nDo police search practices look different across states?\nI wanted to find out if some states search drivers more often than others during traffic stops, and whether searching more frequently actually leads to finding more contraband."
+  },
+  {
+    "objectID": "presentation.html#why-this-matters",
+    "href": "presentation.html#why-this-matters",
+    "title": "Police Search Practices Across Three States",
+    "section": "Why This Matters",
+    "text": "Why This Matters\nThese aren’t small differences - they’re huge.\nCalifornia’s 3.5% hit rate means that in nearly 19 out of 20 searches, nothing is found. This raises some questions about the criteria being used.\nThe data suggests there might be better and worse ways to approach searches during traffic stops, with real implications for both effectiveness and individual rights."
+  },
+  {
+    "objectID": "presentation.html#the-data",
+    "href": "presentation.html#the-data",
+    "title": "Police Search Practices Across Three States",
+    "section": "The Data",
+    "text": "The Data\nStanford Open Policing Project\n\nTraffic stop data from California, Texas, and Illinois\nLooking at 2015-2016\nIncludes millions of traffic stops\nTracks both searches and whether contraband was found"
+  },
+  {
+    "objectID": "presentation.html#search-rates-how-often-do-searches-happen",
+    "href": "presentation.html#search-rates-how-often-do-searches-happen",
+    "title": "Police Search Practices Across Three States",
+    "section": "Search Rates: How Often Do Searches Happen?",
+    "text": "Search Rates: How Often Do Searches Happen?"
+  },
+  {
+    "objectID": "presentation.html#finding-1-dramatic-differences-in-search-rates",
+    "href": "presentation.html#finding-1-dramatic-differences-in-search-rates",
+    "title": "Police Search Practices Across Three States",
+    "section": "Finding #1: Dramatic Differences in Search Rates",
+    "text": "Finding #1: Dramatic Differences in Search Rates\n\n\nCalifornia: 3.2%\nTexas: 1.05%\nFlorida: 0.2%\n\n\nCalifornia searches 16 times more often than Florida\nCalifornia searches 3 times more often than Texas\nPatterns remain stable over time"
+  },
+  {
+    "objectID": "presentation.html#the-follow-up-question",
+    "href": "presentation.html#the-follow-up-question",
+    "title": "Police Search Practices Across Three States",
+    "section": "The Follow-Up Question",
+    "text": "The Follow-Up Question\nSo we know Illinois searches most often, Texas searches least often…\nBut which approach actually finds more contraband?\nA “hit rate” tells us what percentage of searches actually found something."
+  },
+  {
+    "objectID": "presentation.html#hit-rates-how-effective-are-searches",
+    "href": "presentation.html#hit-rates-how-effective-are-searches",
+    "title": "Police Search Practices Across Three States",
+    "section": "Hit Rates: How Effective Are Searches?",
+    "text": "Hit Rates: How Effective Are Searches?"
+  },
+  {
+    "objectID": "presentation.html#finding-2-the-inverse-relationship",
+    "href": "presentation.html#finding-2-the-inverse-relationship",
+    "title": "Police Search Practices Across Three States",
+    "section": "Finding #2: The Inverse Relationship",
+    "text": "Finding #2: The Inverse Relationship\n\n\nTexas\n\n1.05% search rate\n41.65% hit rate\nSelective approach\n\n\nCalifornia\n\n3.2% search rate\n3.51% hit rate\nHigh-volume approach\n\n\nMore searches ≠ Better results"
+  },
+  {
+    "objectID": "presentation.html#what-does-this-mean",
+    "href": "presentation.html#what-does-this-mean",
+    "title": "Police Search Practices Across Three States",
+    "section": "What Does This Mean?",
+    "text": "What Does This Mean?\n\nArizona & Texas: Selective searching with high success rates (42-58%)\nCalifornia: Frequent searching with low success rate (~3.5%)\nThe Trade-off: More searches doesn’t mean better results\nStates that search less often are dramatically more successful per search"
+  },
+  {
+    "objectID": "presentation.html#the-bigger-picture",
+    "href": "presentation.html#the-bigger-picture",
+    "title": "Police Search Practices Across Three States",
+    "section": "The Bigger Picture",
+    "text": "The Bigger Picture\n\n\n\nComplete Summary: Three States (2015-2016)\n\n\nState\nSearch Rate (%)\nTotal Stops\nHit Rate (%)\n\n\n\n\nArizona\n6.16\n1084880\n58.09\n\n\nCalifornia\n3.20\n5957628\n3.51\n\n\nTexas\n1.57\n3577592\n41.65"
+  },
+  {
+    "objectID": "presentation.html#key-takeaways",
+    "href": "presentation.html#key-takeaways",
+    "title": "Police Search Practices Across Three States",
+    "section": "Key Takeaways",
+    "text": "Key Takeaways\nCalifornia stands out for the wrong reasons: While searching 3.2% of stops (more than Texas), California only finds contraband 3.5% of the time - meaning 96.5% of searches turn up nothing.\nTexas searches way less often (1% of stops) but is successful 41.7% of the time - that’s 12 times more effective than California per search.\nIllinois falls in the middle - searches most frequently (4.5%) with moderate success (22.4%).\nThe big question: Why is California’s hit rate so incredibly low? This suggests potential issues with how they’re deciding when to search."
+  },
+  {
+    "objectID": "presentation.html#conclusions",
+    "href": "presentation.html#conclusions",
+    "title": "Police Search Practices Across Three States",
+    "section": "Conclusions",
+    "text": "Conclusions\nThis analysis reveals fundamentally different enforcement strategies across three major states.\nThe data raises important questions about:\n\nOptimal balance between search frequency and effectiveness\nWhether broader search criteria serve public safety goals\nIndividual rights vs. enforcement priorities\nWhat states can learn from each other’s approaches"
+  },
+  {
+    "objectID": "presentation.html#questions",
+    "href": "presentation.html#questions",
+    "title": "Police Search Practices Across Three States",
+    "section": "Questions?",
+    "text": "Questions?\nThanks for listening!"
+  },
+  {
+    "objectID": "presentation.html#finding-1-search-rates-vary-dramatically",
+    "href": "presentation.html#finding-1-search-rates-vary-dramatically",
+    "title": "Police Search Practices Across Three States",
+    "section": "Finding #1: Search Rates Vary Dramatically",
+    "text": "Finding #1: Search Rates Vary Dramatically\nLooking at the chart, we can see clear differences in how often each state conducts searches during traffic stops.\nThe patterns remain stable across both years, suggesting consistent state-level policies rather than year-to-year fluctuations."
+  },
+  {
+    "objectID": "presentation.html#finding-2-three-distinct-approaches",
+    "href": "presentation.html#finding-2-three-distinct-approaches",
+    "title": "Police Search Practices Across Three States",
+    "section": "Finding #2: Three Distinct Approaches",
+    "text": "Finding #2: Three Distinct Approaches\n\n\n\nSearch Frequency vs. Effectiveness\n\n\nState\nSearch Rate (%)\nHit Rate (%)\n\n\n\n\nArizona\n6.16\n58.09\n\n\nTexas\n1.57\n41.65\n\n\nCalifornia\n3.20\n3.51\n\n\n\n\n\nThree completely different strategies emerge"
+  },
+  {
+    "objectID": "presentation.html#why-look-at-this",
+    "href": "presentation.html#why-look-at-this",
+    "title": "Police Search Practices Across Three States",
+    "section": "Why Look at This?",
+    "text": "Why Look at This?\nUnderstanding how police conduct searches matters because:\n\nIt shows us different approaches to law enforcement\nWe can see which strategies are more effective\nIt raises questions about fairness and individual rights\nThe differences between states are pretty significant"
+  },
+  {
+    "objectID": "presentation.html#search-rates-how-often-do-police-search",
+    "href": "presentation.html#search-rates-how-often-do-police-search",
+    "title": "Police Search Practices Across Three States",
+    "section": "Search Rates: How Often Do Police Search?",
+    "text": "Search Rates: How Often Do Police Search?"
+  },
+  {
+    "objectID": "presentation.html#what-i-found-search-rates",
+    "href": "presentation.html#what-i-found-search-rates",
+    "title": "Police Search Practices Across Three States",
+    "section": "What I Found: Search Rates",
+    "text": "What I Found: Search Rates\nIllinois searches most frequently - around 4.5% of all traffic stops result in a search.\nCalifornia is in the middle at about 3.2% of stops.\nTexas searches much less - only around 1% of stops.\nAll three states show consistent patterns across both years."
+  },
+  {
+    "objectID": "presentation.html#hit-rates-when-searches-find-contraband",
+    "href": "presentation.html#hit-rates-when-searches-find-contraband",
+    "title": "Police Search Practices Across Three States",
+    "section": "Hit Rates: When Searches Find Contraband",
+    "text": "Hit Rates: When Searches Find Contraband"
+  },
+  {
+    "objectID": "presentation.html#the-big-finding",
+    "href": "presentation.html#the-big-finding",
+    "title": "Police Search Practices Across Three States",
+    "section": "The Big Finding",
+    "text": "The Big Finding\nThere’s a clear inverse relationship here:\n\nTexas: Searches 1% of stops → Finds contraband 41.7% of the time\nIllinois: Searches 4.5% of stops → Finds contraband 22.4% of the time\nCalifornia: Searches 3.2% of stops → Finds contraband 3.5% of the time\n\nThe state that searches the least (Texas) is actually the most successful per search. The state that searches the most (Illinois) has a lower success rate."
+  },
+  {
+    "objectID": "presentation.html#what-this-actually-means",
+    "href": "presentation.html#what-this-actually-means",
+    "title": "Police Search Practices Across Three States",
+    "section": "What This Actually Means",
+    "text": "What This Actually Means\nMore searches doesn’t equal better results.\nIn fact, it seems like the opposite might be true - states that are more selective about when to search tend to be more successful when they do search.\nThis suggests different standards for what justifies a search. Texas appears to have stricter criteria, while Illinois and California may be using broader reasons to initiate searches."
+  },
+  {
+    "objectID": "presentation.html#all-three-states-compared",
+    "href": "presentation.html#all-three-states-compared",
+    "title": "Police Search Practices Across Three States",
+    "section": "All Three States Compared",
+    "text": "All Three States Compared\n\n\n\nComplete Comparison (2015-2016)\n\n\nState\nSearch Rate (%)\nTotal Stops\nHit Rate (%)\n\n\n\n\nIllinois\n4.46\n4192128\n22.43\n\n\nCalifornia\n3.20\n5957628\n3.51\n\n\nTexas\n1.57\n3577592\n41.65"
   }
 ]

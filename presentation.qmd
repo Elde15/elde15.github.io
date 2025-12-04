@@ -1,0 +1,258 @@
+---
+title: "Police Search Practices Across Three States"
+author: "Eli Della Bitta"
+subtitle: "Data Science Portfolio - December 2025"
+format:
+  revealjs:
+    theme: simple
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    embed-resources: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## The Question
+
+Do police search practices look different across states?
+
+I wanted to find out if some states search drivers more often than others during traffic stops, and whether searching more frequently actually leads to finding more contraband.
+
+## Why Look at This?
+
+Understanding how police conduct searches matters because:
+
+- It shows us different approaches to law enforcement
+- We can see which strategies are more effective
+- It raises questions about fairness and individual rights
+- The differences between states are pretty significant
+
+## The Data
+```{r}
+#| label: setup
+library(DBI)
+library(RMariaDB)
+library(tidyverse)
+library(ggplot2)
+
+# Connect to traffic database
+con_traffic <- DBI::dbConnect(
+  RMariaDB::MariaDB(),
+  dbname = "traffic",
+  host = "traffic.st47s.com",
+  user = Sys.getenv("TRAFFIC_USER"),
+  password = Sys.getenv("TRAFFIC_PWD")
+)
+```
+
+**Stanford Open Policing Project**
+
+- Traffic stop data from California, Texas, and Illinois
+- Looking at 2015-2016
+- Includes millions of traffic stops
+- Tracks both searches and whether contraband was found
+
+## Search Rates: How Often Do Police Search?
+```{r}
+#| label: load-search-rates
+search_rates <- dbGetQuery(con_traffic, "
+SELECT 
+  'California' AS state,
+  YEAR(date) AS stop_year,
+  COUNT(*) AS total_stops,
+  SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) AS searches_conducted,
+  ROUND(100.0 * SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) / COUNT(*), 2) AS search_rate_percent
+FROM ca_statewide_2023_01_26
+WHERE YEAR(date) BETWEEN 2015 AND 2016
+GROUP BY stop_year
+
+UNION ALL
+
+SELECT 
+  'Texas' AS state,
+  YEAR(date) AS stop_year,
+  COUNT(*) AS total_stops,
+  SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) AS searches_conducted,
+  ROUND(100.0 * SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) / COUNT(*), 2) AS search_rate_percent
+FROM tx_statewide_2020_04_01
+WHERE YEAR(date) BETWEEN 2015 AND 2016
+GROUP BY stop_year
+
+UNION ALL
+
+SELECT 
+  'Illinois' AS state,
+  YEAR(date) AS stop_year,
+  COUNT(*) AS total_stops,
+  SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) AS searches_conducted,
+  ROUND(100.0 * SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) / COUNT(*), 2) AS search_rate_percent
+FROM il_statewide_2020_04_01
+WHERE YEAR(date) BETWEEN 2015 AND 2016
+GROUP BY stop_year
+
+ORDER BY state, stop_year
+")
+```
+```{r}
+#| label: search-rate-plot
+#| fig-width: 10
+#| fig-height: 6
+ggplot(search_rates, aes(x = stop_year, y = search_rate_percent, color = state, group = state)) +
+  geom_line(linewidth = 2) +
+  geom_point(size = 4) +
+  labs(
+    title = "Police Search Rates During Traffic Stops (2015-2016)",
+    x = "Year",
+    y = "Search Rate (%)",
+    color = "State"
+  ) +
+  theme_minimal(base_size = 16) +
+  scale_color_manual(values = c("California" = "#1f77b4", "Texas" = "#ff7f0e", "Illinois" = "#2ca02c")) +
+  theme(legend.position = "bottom",
+        legend.text = element_text(size = 14))
+```
+
+## What I Found: Search Rates
+
+Illinois searches most frequently - around **4.5%** of all traffic stops result in a search.
+
+California is in the middle at about **3.2%** of stops.
+
+Texas searches much less - only around **1%** of stops.
+
+All three states show consistent patterns across both years.
+
+## The Follow-Up Question
+
+So we know Illinois searches most often, Texas searches least often...
+
+**But which approach actually finds more contraband?**
+
+A "hit rate" tells us what percentage of searches actually found something.
+
+## Hit Rates: When Searches Find Contraband
+```{r}
+#| label: load-hit-rates
+hit_rates <- dbGetQuery(con_traffic, "
+SELECT 
+  'California' AS state,
+  SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) AS searches_conducted,
+  SUM(CASE WHEN contraband_found = TRUE THEN 1 ELSE 0 END) AS contraband_found,
+  ROUND(100.0 * SUM(CASE WHEN contraband_found = TRUE THEN 1 ELSE 0 END) / 
+    SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END), 2) AS hit_rate_percent
+FROM ca_statewide_2023_01_26
+WHERE YEAR(date) BETWEEN 2015 AND 2016
+
+UNION ALL
+
+SELECT 
+  'Texas' AS state,
+  SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) AS searches_conducted,
+  SUM(CASE WHEN contraband_found = TRUE THEN 1 ELSE 0 END) AS contraband_found,
+  ROUND(100.0 * SUM(CASE WHEN contraband_found = TRUE THEN 1 ELSE 0 END) / 
+    SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END), 2) AS hit_rate_percent
+FROM tx_statewide_2020_04_01
+WHERE YEAR(date) BETWEEN 2015 AND 2016
+
+UNION ALL
+
+SELECT 
+  'Illinois' AS state,
+  SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END) AS searches_conducted,
+  SUM(CASE WHEN contraband_found = TRUE THEN 1 ELSE 0 END) AS contraband_found,
+  ROUND(100.0 * SUM(CASE WHEN contraband_found = TRUE THEN 1 ELSE 0 END) / 
+    SUM(CASE WHEN search_conducted = TRUE THEN 1 ELSE 0 END), 2) AS hit_rate_percent
+FROM il_statewide_2020_04_01
+WHERE YEAR(date) BETWEEN 2015 AND 2016
+")
+```
+```{r}
+#| label: hit-rate-plot
+#| fig-width: 10
+#| fig-height: 6
+ggplot(hit_rates, aes(x = reorder(state, -hit_rate_percent), y = hit_rate_percent, fill = state)) +
+  geom_col(width = 0.6) +
+  geom_text(aes(label = paste0(hit_rate_percent, "%")), vjust = -0.5, size = 6) +
+  labs(
+    title = "Success Rate: Searches That Found Contraband",
+    x = "State",
+    y = "Hit Rate (%)"
+  ) +
+  theme_minimal(base_size = 16) +
+  scale_fill_manual(values = c("California" = "#1f77b4", "Texas" = "#ff7f0e", "Illinois" = "#2ca02c")) +
+  theme(legend.position = "none") +
+  ylim(0, 50)
+```
+
+## The Big Finding
+
+There's a clear inverse relationship here:
+
+- **Texas:** Searches 1% of stops → Finds contraband 41.7% of the time
+- **Illinois:** Searches 4.5% of stops → Finds contraband 22.4% of the time
+- **California:** Searches 3.2% of stops → Finds contraband 3.5% of the time
+
+The state that searches the least (Texas) is actually the most successful per search. The state that searches the most (Illinois) has a lower success rate.
+
+## What This Actually Means
+
+More searches doesn't equal better results.
+
+In fact, it seems like the opposite might be true - states that are more selective about when to search tend to be more successful when they do search.
+
+This suggests different standards for what justifies a search. Texas appears to have stricter criteria, while Illinois and California may be using broader reasons to initiate searches.
+
+## All Three States Compared
+```{r}
+#| label: summary-table
+summary_data <- search_rates |>
+  group_by(state) |>
+  summarise(
+    avg_search_rate = mean(search_rate_percent),
+    total_stops = sum(total_stops)
+  ) |>
+  left_join(hit_rates |> select(state, hit_rate_percent), by = "state") |>
+  arrange(desc(avg_search_rate))
+
+knitr::kable(summary_data, 
+             digits = 2,
+             col.names = c("State", "Search Rate (%)", "Total Stops", "Hit Rate (%)"),
+             caption = "Complete Comparison (2015-2016)")
+```
+
+## Key Takeaways
+
+**California stands out for the wrong reasons:** While searching 3.2% of stops (more than Texas), California only finds contraband 3.5% of the time - meaning **96.5% of searches turn up nothing**.
+
+Texas searches way less often (1% of stops) but is successful 41.7% of the time - that's **12 times more effective** than California per search.
+
+Illinois falls in the middle - searches most frequently (4.5%) with moderate success (22.4%).
+
+**The big question:** Why is California's hit rate so incredibly low? This suggests potential issues with how they're deciding when to search.
+
+## Why This Matters
+
+These aren't small differences - they're huge.
+
+California's 3.5% hit rate means that in nearly 19 out of 20 searches, nothing is found. This raises some questions about the criteria being used.
+
+The data suggests there might be better and worse ways to approach searches during traffic stops, with real implications for both effectiveness and individual rights.
+```{r}
+#| label: disconnect
+dbDisconnect(con_traffic)
+```
+
+## Questions?
+
+Thanks for listening!
+
+---
+
+**Data Source:** 
+
+Pierson et al. (2020). "A large-scale analysis of racial disparities in police stops across the United States." *Nature Human Behaviour*
+
+Stanford Open Policing Project: openpolicing.stanford.edu

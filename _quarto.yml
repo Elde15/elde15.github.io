@@ -8,6 +8,8 @@ website:
     right: 
       - text: "About Me"
         href: index.html
+      - text: "Presentation"
+        href: presentation.html
       - text: "Data Viz"
         menu: 
           - text: "Netflix Analysis"
