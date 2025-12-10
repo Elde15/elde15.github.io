@@ -1,7 +1,7 @@
 ---
-title: "Netflix Movies and TV Shows"
+title: "Netflix Content Analysis"
 description: |
-  Looking at Netflix content types from TidyTuesday
+  Analyzing the distribution of movies versus TV shows on Netflix
 author: Eli Della Bitta
 date: September 2, 2025
 format: 
@@ -13,34 +13,54 @@ format:
 
 ## Introduction
 
-This dataset contains information about movies and TV shows available on Netflix. I will create a simple visualization to see how much content Netflix has for movies versus TV shows.
+This analysis will look atthe distribution of content types that is on Netflix, specifically comparing the number of movies versus TV shows on the platform. Understanding this distribution provides insight into Netflix's content strategy and what type of entertainment they provide. The dataset contains information about titles available on Netflix as of mid-2021, including details about each title's type, release year, and other characteristics.
 
 ## Data Loading
 
 ```{r}
 #| label: setup
+
+# Load required libraries for data manipulation and visualization
 library(ggplot2)
 library(dplyr)
 
+# Read Netflix titles dataset from TidyTuesday
+# This dataset contains information on movies and TV shows available on Netflix
 netflix <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2021/2021-04-20/netflix_titles.csv')
 ```
 
-```{r}
+## Content Distribution Analysis
 
+```{r}
+#| label: content-visualization
+#| fig-alt: "Bar chart comparing Netflix content types. Movies make up the majority with around 6,100 titles shown in a red bar, while TV shows make up a smaller portion with approximately 2,700 titles shown in a black bar. The chart tells us that Netflix's catalog contains roughly twice as many movies as TV shows."
+
+# Count the number of titles by type (Movie vs TV Show)
 content_counts <- netflix |>
   count(type)
 
-
+# Create bar chart showing content distribution
+# Using Netflix's brand colors: red for movies, black for TV shows
 ggplot(content_counts, aes(x = type, y = n, fill = type)) +
   geom_col() +
   labs(title = "Netflix Content: Movies vs TV Shows",
+       subtitle = "Distribution of content types in Netflix catalog (as of 2021)",
        x = "Content Type",
        y = "Number of Titles") +
   theme_minimal() +
-  scale_fill_manual(values = c("Movie" = "red", "TV Show" = "black"))
+  scale_fill_manual(values = c("Movie" = "red", "TV Show" = "black")) +
+  # Remove legend since x-axis already labels the types
+  theme(legend.position = "none")
 ```
+
+## Analysis Summary
+
+The visualization shows us that Netflix's offerings contain more movies than TV shows, with around 6,100 movies compared to 2,700 TV shows. This means movies make up roughly 69% of Netflix's content , while TV shows about 31%. This distribution reflects Netflix's focus on producing film content, even though the company has started to invest more in original TV series in recent years. 
 
 ## Data Sources
 
--   Tinytuesday Dataset: [Week 17, 2021 - Netflix Titles](https://github.com/rfordatascience/tidytuesday/blob/main/data/2021/2021-04-20/readme.md)
--   Original Data Source: Kaggle dataset "Netflix Movies and TV Shows" compiled by Shivam Bansal, originally sourced from Flixable (a third-party Netflix search engine)
+**TidyTuesday Dataset:** Rfordatascience. (2021). Netflix Movies and TV Shows [Data set]. Week 17, 2021. TidyTuesday Project. https://github.com/rfordatascience/tidytuesday/blob/main/data/2021/2021-04-20/readme.md
+
+**Original Data Source:** Bansal, S. (2021). Netflix Movies and TV Shows [Data set]. Kaggle. The original data was compiled by Shivam Bansal and sourced from Flixable, a third-party Netflix search engine that tracks content availability across different regions. The dataset was last updated in 2021 and includes titles available on Netflix at that time.
+
+**Data Collection Method:** The data was collected through Flixable's web scraping of Netflix's publicly available catalog information, including title names, types, release years, ratings, and descriptions. Note that Netflix's catalog varies by region, and this dataset primarily reflects content available in the United States.

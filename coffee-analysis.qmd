@@ -1,7 +1,7 @@
 ---
-title: "Coffee Ratings Analysis"
+title: "Coffee Quality Analysis by Country"
 description: |
-  Simple analysis of coffee ratings from TidyTuesday
+  Analyzing coffee ratings from around the world to identify top coffee-producing countries
 author: Eli Della Bitta
 date: September 2, 2025
 format: 
@@ -13,39 +13,75 @@ format:
 
 ## Introduction
 
-This dataset has coffee ratings from around the world. I want to see which countries produce the highest rated coffee by looking at the total cupping scores.
+This analysis looks at coffee quality ratings from around the world to try and see which countries produce the highest-rated coffee. Coffee quality is given by professional tasters using a standardized cupping protocol that evaluates characteristics like flavor, aroma, acidity, and body. Understanding geographic patterns in coffee quality can tell us how factors like climate, elevation, soil conditions, and processing methods contribute to coffee. By focusing on countries with larger sample sizes, I can find regions that produce high-quality coffee rather than countries with just one or two outliers.
 
 ## Data Loading
 
 ```{r}
 #| label: setup
+
+# Load required libraries for data manipulation and visualization
 library(ggplot2)
 library(dplyr)
 
+# Read coffee quality ratings dataset from TidyTuesday
+# This dataset contains professional cupping scores for coffees from around the world
 coffee <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2020/2020-07-07/coffee_ratings.csv')
 ```
 
+## Top Coffee-Producing Countries
+
 ```{r}
+#| label: country-analysis
+#| fig-alt: "Horizontal bar chart showing the top 10 countries by average coffee rating. Ethiopia leads with the highest average rating around 85 points, followed closely by Kenya, Uganda, Tanzania, and Hawaii. The bars use a gradient color scheme from tan (lower ratings) to dark brown (higher ratings), creating a visual representation of coffee quality. All countries shown have average ratings between 83 and 85 points on the cupping scale."
+
+# Calculate average ratings by country
+# Filter for countries with at least 5 rated coffees to ensure reliability
 country_ratings <- coffee |>
+  # Remove any entries missing quality scores
   filter(!is.na(total_cup_points)) |>
+  # Group by country to calculate statistics
   group_by(country_of_origin) |>
-  summarise(avg_rating = mean(total_cup_points),
-            count = n()) |>
+  summarise(
+    avg_rating = mean(total_cup_points),  # Average cupping score
+    count = n()                            # Number of coffees rated
+  ) |>
+  # Only include countries with 5+ coffees to avoid single-sample bias
   filter(count >= 5) |>
+  # Sort by rating to identify highest-quality producers
   arrange(desc(avg_rating)) |>
+  # Show top 10 countries
   head(10)
 
+# Create horizontal bar chart for easy country name reading
+# Use color gradient to visually represent quality levels
 ggplot(country_ratings, aes(x = reorder(country_of_origin, avg_rating), y = avg_rating, fill = avg_rating)) +
   geom_col() +
-  coord_flip() +
+  coord_flip() +  # Horizontal bars make country names easier to read
   labs(title = "Top 10 Countries by Average Coffee Rating",
-       x = "Country",
-       y = "Average Rating") +
+       subtitle = "Based on professional cupping scores (countries with 5+ rated coffees)",
+       x = "Country of Origin",
+       y = "Average Cupping Score",
+       fill = "Rating") +
   theme_minimal() +
-  scale_fill_gradient(low = "tan", high = "black")
+  # Color gradient from tan to dark brown mimics coffee colors
+  scale_fill_gradient(low = "tan", high = "#3D2817") +
+  # Remove legend since color gradient is intuitive
+  theme(legend.position = "none")
 ```
+
+## Analysis Summary
+
+The visualization ends up telling us that Ethiopia produces the highest-rated coffee on average, with an average cupping score around 85 points. This makes sense given Ethiopia's status as the birthplace of coffee and its ideal growing conditions, including high elevations and diverse coffee varieties. Kenya, Uganda, and Tanzania also rank highly, reflecting East Africa's reputation as the best coffee-growing region. Interestingly, the United States (primarily Hawaii) appears in the top 10, showing us that good coffee can be made outside of traditional coffee growing regions. 
+
+All top-10 countries have average ratings between 83 and 85 points, which represents specialty-grade coffee according to the Specialty Coffee Association's standards (80+ points indicates specialty grade). The relatively small range between top countries tells us that that many regions have mastered the conditions needed for high-quality production. 
+
+It's worth taking note that these ratings reflect the quality of coffees submitted for professional evaluation, which may not represent each country's entire coffee production. Higher-rated countries could be more selective about which coffees they submit for evaluation, or may have stronger quality control systems in place.
 
 ## Data Sources
 
--   **TidyTuesday Dataset**: [Week 28, 2020 - Coffee Ratings](https://github.com/rfordatascience/tidytuesday/blob/main/data/2020/2020-07-07/readme.md)
--   **Original Data Source**: Coffee Quality Database from the Coffee Quality Institute (CQI), which maintains a database of professionally rated coffees
+**TidyTuesday Dataset:** Mock, T. (2020). Coffee Ratings [Data set]. Week 28, 2020. TidyTuesday Project. https://github.com/rfordatascience/tidytuesday/blob/main/data/2020/2020-07-07/readme.md
+
+**Original Data Source:** Coffee Quality Institute (CQI). Coffee Quality Database. https://database.coffeeinstitute.org/
+
+**Data Collection Method:** Coffees in this database were submitted by producers, cooperatives, and coffee organizations for evaluation. The evaluations follow the Specialty Coffee Association's standardized cupping protocol, making sure that we have consistency across different tasters and sessions.

@@ -8,9 +8,9 @@
 
 <meta name="author" content="Eli Della Bitta">
 <meta name="dcterms.date" content="2025-09-02">
-<meta name="description" content="Looking at Netflix content types from TidyTuesday">
+<meta name="description" content="Analyzing the distribution of movies versus TV shows on Netflix">
 
-<title>Netflix Movies and TV Shows – Eli Della Bitta - Data Science Portfolio</title>
+<title>Netflix Content Analysis – Eli Della Bitta - Data Science Portfolio</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -134,6 +134,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="./index.html"> 
 <span class="menu-text">About Me</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./presentation.html"> 
+<span class="menu-text">Presentation</span></a>
+  </li>  
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-data-viz" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Data Viz</span>
@@ -183,6 +187,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#data-loading" id="toc-data-loading" class="nav-link" data-scroll-target="#data-loading">Data Loading</a></li>
+  <li><a href="#content-distribution-analysis" id="toc-content-distribution-analysis" class="nav-link" data-scroll-target="#content-distribution-analysis">Content Distribution Analysis</a></li>
+  <li><a href="#analysis-summary" id="toc-analysis-summary" class="nav-link" data-scroll-target="#analysis-summary">Analysis Summary</a></li>
   <li><a href="#data-sources" id="toc-data-sources" class="nav-link" data-scroll-target="#data-sources">Data Sources</a></li>
   </ul>
 </nav>
@@ -192,12 +198,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Netflix Movies and TV Shows</h1>
+<h1 class="title">Netflix Content Analysis</h1>
 </div>
 
 <div>
   <div class="description">
-    <p>Looking at Netflix content types from TidyTuesday</p>
+    <p>Analyzing the distribution of movies versus TV shows on Netflix</p>
   </div>
 </div>
 
@@ -228,49 +234,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>This dataset contains information about movies and TV shows available on Netflix. I will create a simple visualization to see how much content Netflix has for movies versus TV shows.</p>
+<p>This analysis will look atthe distribution of content types that is on Netflix, specifically comparing the number of movies versus TV shows on the platform. Understanding this distribution provides insight into Netflix’s content strategy and what type of entertainment they provide. The dataset contains information about titles available on Netflix as of mid-2021, including details about each title’s type, release year, and other characteristics.</p>
 </section>
 <section id="data-loading" class="level2">
 <h2 class="anchored" data-anchor-id="data-loading">Data Loading</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>netflix <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2021/2021-04-20/netflix_titles.csv'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required libraries for data manipulation and visualization</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Read Netflix titles dataset from TidyTuesday</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># This dataset contains information on movies and TV shows available on Netflix</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>netflix <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2021/2021-04-20/netflix_titles.csv'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
+</section>
+<section id="content-distribution-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="content-distribution-analysis">Content Distribution Analysis</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>content_counts <span class="ot">&lt;-</span> netflix <span class="sc">|&gt;</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(type)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Count the number of titles by type (Movie vs TV Show)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>content_counts <span class="ot">&lt;-</span> netflix <span class="sc">|&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(type)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(content_counts, <span class="fu">aes</span>(<span class="at">x =</span> type, <span class="at">y =</span> n, <span class="at">fill =</span> type)) <span class="sc">+</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Netflix Content: Movies vs TV Shows"</span>,</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Content Type"</span>,</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Titles"</span>) <span class="sc">+</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Movie"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"TV Show"</span> <span class="ot">=</span> <span class="st">"black"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create bar chart showing content distribution</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Using Netflix's brand colors: red for movies, black for TV shows</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(content_counts, <span class="fu">aes</span>(<span class="at">x =</span> type, <span class="at">y =</span> n, <span class="at">fill =</span> type)) <span class="sc">+</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Netflix Content: Movies vs TV Shows"</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Distribution of content types in Netflix catalog (as of 2021)"</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Content Type"</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Titles"</span>) <span class="sc">+</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Movie"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"TV Show"</span> <span class="ot">=</span> <span class="st">"black"</span>)) <span class="sc">+</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove legend since x-axis already labels the types</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="netflix-analysis_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="netflix-analysis_files/figure-html/content-visualization-1.png" class="img-fluid figure-img" alt="Bar chart comparing Netflix content types. Movies make up the majority with around 6,100 titles shown in a red bar, while TV shows make up a smaller portion with approximately 2,700 titles shown in a black bar. The chart tells us that Netflix's catalog contains roughly twice as many movies as TV shows." width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
+<section id="analysis-summary" class="level2">
+<h2 class="anchored" data-anchor-id="analysis-summary">Analysis Summary</h2>
+<p>The visualization shows us that Netflix’s offerings contain more movies than TV shows, with around 6,100 movies compared to 2,700 TV shows. This means movies make up roughly 69% of Netflix’s content , while TV shows about 31%. This distribution reflects Netflix’s focus on producing film content, even though the company has started to invest more in original TV series in recent years.</p>
+</section>
 <section id="data-sources" class="level2">
 <h2 class="anchored" data-anchor-id="data-sources">Data Sources</h2>
-<ul>
-<li>Tinytuesday Dataset: <a href="https://github.com/rfordatascience/tidytuesday/blob/main/data/2021/2021-04-20/readme.md">Week 17, 2021 - Netflix Titles</a></li>
-<li>Original Data Source: Kaggle dataset “Netflix Movies and TV Shows” compiled by Shivam Bansal, originally sourced from Flixable (a third-party Netflix search engine)</li>
-</ul>
+<p><strong>TidyTuesday Dataset:</strong> Rfordatascience. (2021). Netflix Movies and TV Shows [Data set]. Week 17, 2021. TidyTuesday Project. https://github.com/rfordatascience/tidytuesday/blob/main/data/2021/2021-04-20/readme.md</p>
+<p><strong>Original Data Source:</strong> Bansal, S. (2021). Netflix Movies and TV Shows [Data set]. Kaggle. The original data was compiled by Shivam Bansal and sourced from Flixable, a third-party Netflix search engine that tracks content availability across different regions. The dataset was last updated in 2021 and includes titles available on Netflix at that time.</p>
+<p><strong>Data Collection Method:</strong> The data was collected through Flixable’s web scraping of Netflix’s publicly available catalog information, including title names, types, release years, ratings, and descriptions. Note that Netflix’s catalog varies by region, and this dataset primarily reflects content available in the United States.</p>
 
 
 </section>

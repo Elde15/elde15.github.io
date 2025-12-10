@@ -8,9 +8,9 @@
 
 <meta name="author" content="Eli Della Bitta">
 <meta name="dcterms.date" content="2025-09-02">
-<meta name="description" content="Simple analysis of coffee ratings from TidyTuesday">
+<meta name="description" content="Analyzing coffee ratings from around the world to identify top coffee-producing countries">
 
-<title>Coffee Ratings Analysis – Eli Della Bitta - Data Science Portfolio</title>
+<title>Coffee Quality Analysis by Country – Eli Della Bitta - Data Science Portfolio</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -134,6 +134,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="./index.html"> 
 <span class="menu-text">About Me</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./presentation.html"> 
+<span class="menu-text">Presentation</span></a>
+  </li>  
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-data-viz" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Data Viz</span>
@@ -183,6 +187,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#data-loading" id="toc-data-loading" class="nav-link" data-scroll-target="#data-loading">Data Loading</a></li>
+  <li><a href="#top-coffee-producing-countries" id="toc-top-coffee-producing-countries" class="nav-link" data-scroll-target="#top-coffee-producing-countries">Top Coffee-Producing Countries</a></li>
+  <li><a href="#analysis-summary" id="toc-analysis-summary" class="nav-link" data-scroll-target="#analysis-summary">Analysis Summary</a></li>
   <li><a href="#data-sources" id="toc-data-sources" class="nav-link" data-scroll-target="#data-sources">Data Sources</a></li>
   </ul>
 </nav>
@@ -192,12 +198,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Coffee Ratings Analysis</h1>
+<h1 class="title">Coffee Quality Analysis by Country</h1>
 </div>
 
 <div>
   <div class="description">
-    <p>Simple analysis of coffee ratings from TidyTuesday</p>
+    <p>Analyzing coffee ratings from around the world to identify top coffee-producing countries</p>
   </div>
 </div>
 
@@ -228,55 +234,82 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>This dataset has coffee ratings from around the world. I want to see which countries produce the highest rated coffee by looking at the total cupping scores.</p>
+<p>This analysis looks at coffee quality ratings from around the world to try and see which countries produce the highest-rated coffee. Coffee quality is given by professional tasters using a standardized cupping protocol that evaluates characteristics like flavor, aroma, acidity, and body. Understanding geographic patterns in coffee quality can tell us how factors like climate, elevation, soil conditions, and processing methods contribute to coffee. By focusing on countries with larger sample sizes, I can find regions that produce high-quality coffee rather than countries with just one or two outliers.</p>
 </section>
 <section id="data-loading" class="level2">
 <h2 class="anchored" data-anchor-id="data-loading">Data Loading</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>coffee <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2020/2020-07-07/coffee_ratings.csv'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required libraries for data manipulation and visualization</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Read coffee quality ratings dataset from TidyTuesday</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># This dataset contains professional cupping scores for coffees from around the world</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>coffee <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2020/2020-07-07/coffee_ratings.csv'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
+</section>
+<section id="top-coffee-producing-countries" class="level2">
+<h2 class="anchored" data-anchor-id="top-coffee-producing-countries">Top Coffee-Producing Countries</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>country_ratings <span class="ot">&lt;-</span> coffee <span class="sc">|&gt;</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(total_cup_points)) <span class="sc">|&gt;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(country_of_origin) <span class="sc">|&gt;</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_rating =</span> <span class="fu">mean</span>(total_cup_points),</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">count =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(count <span class="sc">&gt;=</span> <span class="dv">5</span>) <span class="sc">|&gt;</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(avg_rating)) <span class="sc">|&gt;</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(country_ratings, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(country_of_origin, avg_rating), <span class="at">y =</span> avg_rating, <span class="at">fill =</span> avg_rating)) <span class="sc">+</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Top 10 Countries by Average Coffee Rating"</span>,</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Country"</span>,</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Average Rating"</span>) <span class="sc">+</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"tan"</span>, <span class="at">high =</span> <span class="st">"black"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate average ratings by country</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter for countries with at least 5 rated coffees to ensure reliability</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>country_ratings <span class="ot">&lt;-</span> coffee <span class="sc">|&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove any entries missing quality scores</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(total_cup_points)) <span class="sc">|&gt;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Group by country to calculate statistics</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(country_of_origin) <span class="sc">|&gt;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_rating =</span> <span class="fu">mean</span>(total_cup_points),  <span class="co"># Average cupping score</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">count =</span> <span class="fu">n</span>()                            <span class="co"># Number of coffees rated</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Only include countries with 5+ coffees to avoid single-sample bias</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(count <span class="sc">&gt;=</span> <span class="dv">5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sort by rating to identify highest-quality producers</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(avg_rating)) <span class="sc">|&gt;</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Show top 10 countries</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Create horizontal bar chart for easy country name reading</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Use color gradient to visually represent quality levels</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(country_ratings, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(country_of_origin, avg_rating), <span class="at">y =</span> avg_rating, <span class="at">fill =</span> avg_rating)) <span class="sc">+</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span>  <span class="co"># Horizontal bars make country names easier to read</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Top 10 Countries by Average Coffee Rating"</span>,</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Based on professional cupping scores (countries with 5+ rated coffees)"</span>,</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Country of Origin"</span>,</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Average Cupping Score"</span>,</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Rating"</span>) <span class="sc">+</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Color gradient from tan to dark brown mimics coffee colors</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"tan"</span>, <span class="at">high =</span> <span class="st">"#3D2817"</span>) <span class="sc">+</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove legend since color gradient is intuitive</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="coffee-analysis_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="coffee-analysis_files/figure-html/country-analysis-1.png" class="img-fluid figure-img" alt="Horizontal bar chart showing the top 10 countries by average coffee rating. Ethiopia leads with the highest average rating around 85 points, followed closely by Kenya, Uganda, Tanzania, and Hawaii. The bars use a gradient color scheme from tan (lower ratings) to dark brown (higher ratings), creating a visual representation of coffee quality. All countries shown have average ratings between 83 and 85 points on the cupping scale." width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
+<section id="analysis-summary" class="level2">
+<h2 class="anchored" data-anchor-id="analysis-summary">Analysis Summary</h2>
+<p>The visualization ends up telling us that Ethiopia produces the highest-rated coffee on average, with an average cupping score around 85 points. This makes sense given Ethiopia’s status as the birthplace of coffee and its ideal growing conditions, including high elevations and diverse coffee varieties. Kenya, Uganda, and Tanzania also rank highly, reflecting East Africa’s reputation as the best coffee-growing region. Interestingly, the United States (primarily Hawaii) appears in the top 10, showing us that good coffee can be made outside of traditional coffee growing regions.</p>
+<p>All top-10 countries have average ratings between 83 and 85 points, which represents specialty-grade coffee according to the Specialty Coffee Association’s standards (80+ points indicates specialty grade). The relatively small range between top countries tells us that that many regions have mastered the conditions needed for high-quality production.</p>
+<p>It’s worth taking note that these ratings reflect the quality of coffees submitted for professional evaluation, which may not represent each country’s entire coffee production. Higher-rated countries could be more selective about which coffees they submit for evaluation, or may have stronger quality control systems in place.</p>
+</section>
 <section id="data-sources" class="level2">
 <h2 class="anchored" data-anchor-id="data-sources">Data Sources</h2>
-<ul>
-<li><strong>TidyTuesday Dataset</strong>: <a href="https://github.com/rfordatascience/tidytuesday/blob/main/data/2020/2020-07-07/readme.md">Week 28, 2020 - Coffee Ratings</a></li>
-<li><strong>Original Data Source</strong>: Coffee Quality Database from the Coffee Quality Institute (CQI), which maintains a database of professionally rated coffees</li>
-</ul>
+<p><strong>TidyTuesday Dataset:</strong> Mock, T. (2020). Coffee Ratings [Data set]. Week 28, 2020. TidyTuesday Project. https://github.com/rfordatascience/tidytuesday/blob/main/data/2020/2020-07-07/readme.md</p>
+<p><strong>Original Data Source:</strong> Coffee Quality Institute (CQI). Coffee Quality Database. https://database.coffeeinstitute.org/</p>
+<p><strong>Data Collection Method:</strong> Coffees in this database were submitted by producers, cooperatives, and coffee organizations for evaluation. The evaluations follow the Specialty Coffee Association’s standardized cupping protocol, making sure that we have consistency across different tasters and sessions.</p>
 
 
 </section>

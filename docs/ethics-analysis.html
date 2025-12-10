@@ -6,11 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Eli Della Bitta">
-<meta name="dcterms.date" content="2025-11-12">
-<meta name="description" content="Examining ethical concerns in Facebook’s 2012 emotional manipulation study">
 
-<title>Facebook Emotional Contagion Experiment: An Ethics Analysis – Eli Della Bitta - Data Science Portfolio</title>
+<title>ethics-analysis – Eli Della Bitta - Data Science Portfolio</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -99,6 +96,10 @@ ul.task-list li input[type="checkbox"] {
     <a class="nav-link" href="./index.html"> 
 <span class="menu-text">About Me</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./presentation.html"> 
+<span class="menu-text">Presentation</span></a>
+  </li>  
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-data-viz" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Data Viz</span>
@@ -141,103 +142,72 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#informed-consent-and-user-awareness" id="toc-informed-consent-and-user-awareness" class="nav-link" data-scroll-target="#informed-consent-and-user-awareness">Informed Consent and User Awareness</a></li>
-  <li><a href="#privacy-and-data-collection" id="toc-privacy-and-data-collection" class="nav-link" data-scroll-target="#privacy-and-data-collection">Privacy and Data Collection</a></li>
-  <li><a href="#bias-and-representation" id="toc-bias-and-representation" class="nav-link" data-scroll-target="#bias-and-representation">Bias and Representation</a></li>
-  <li><a href="#power-dynamics-and-harm" id="toc-power-dynamics-and-harm" class="nav-link" data-scroll-target="#power-dynamics-and-harm">Power Dynamics and Harm</a></li>
-  <li><a href="#why-this-matters" id="toc-why-this-matters" class="nav-link" data-scroll-target="#why-this-matters">Why This Matters</a></li>
-  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Facebook Emotional Contagion Experiment: An Ethics Analysis</h1>
-</div>
-
-<div>
-  <div class="description">
-    <p>Examining ethical concerns in Facebook’s 2012 emotional manipulation study</p>
-  </div>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
-<div class="quarto-title-meta">
-
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Eli Della Bitta </p>
-          </div>
-  </div>
-    
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">November 12, 2025</p>
-    </div>
-  </div>
-  
-    
-  </div>
-  
 
 
-</header>
-
-
-<section id="introduction" class="level2">
-<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td>title: “Facebook Emotional Contagion Experiment: An Ethics Analysis”</td>
+</tr>
+<tr class="even">
+<td>description: |</td>
+</tr>
+<tr class="odd">
+<td>Examining ethical concerns in Facebook’s 2012 emotional manipulation study</td>
+</tr>
+<tr class="even">
+<td>author: Eli Della Bitta</td>
+</tr>
+<tr class="odd">
+<td>date: November 12, 2025</td>
+</tr>
+<tr class="even">
+<td>format:</td>
+</tr>
+<tr class="odd">
+<td>html:</td>
+</tr>
+<tr class="even">
+<td>warning: false</td>
+</tr>
+<tr class="odd">
+<td>message: false</td>
+</tr>
+</tbody>
+</table>
+<p>## Introduction</p>
 <p>In 2012, Facebook did a secret psychological experiment on nearly 700,000 users without their knowledge or consent. The study, published in 2014, manipulated users News Feeds to show either positive or negative emotional content to try and see if emotions could spread through social media (Kramer, Guillory, &amp; Hancock, 2014). When users saw more positive posts from friends, they posted more positive content on their own accounts. When they saw more negative posts, they posted more negatively. This experiment sparked major controversy about consent, user privacy, and the ethics of conducting psychological research on participants who are unaware through a social media platform.</p>
 <p>The data science aspect involves Facebook’s algorithm manipulating what content shows up in users News Feeds, then analyzing the posts using user sentiment analysis to measure emotional bias. The ethical issues center on whether it is acceptable to preform psychological experiments on users without their knowledge, using a platform they rely on for social connection, and potentially causing psychological harm in the process.</p>
-</section>
-<section id="informed-consent-and-user-awareness" class="level2">
-<h2 class="anchored" data-anchor-id="informed-consent-and-user-awareness">Informed Consent and User Awareness</h2>
+<p>## Informed Consent and User Awareness</p>
 <p>The most significant ethical issue with this experiment was the absence of consent. The researchers did not notify participants that they were part of a psychological study, and they did not give users the option to opt out (Meyer, 2014). Facebook’s argument was that users agreed to the platform’s Data Use Policy when they signed up, which stated that user data could be used for “research” and “testing.” However, this relatively vauge language they buried in their terms of service does not really allow informed consent for a psychological experiment.</p>
 <p>Informed consent requires that participants understand what they are agreeing to, including the purpose of the study, any potential risks, and their right to withdraw. The Facebook users had no idea their emotions were being deliberately manipulated as part of an experiment. They could not provide meaningful consent because they did not know the study even existed. This violates basic ethical standards established by Institutional Review Boards, which require voluntary participation based on full disclosure of the research activities that are taking place. The fact that Facebook claimed their Terms of Service covered this experiment demonstrates how companies exploit legal agreements to conduct research that would never pass ethical review at a university.</p>
-</section>
-<section id="privacy-and-data-collection" class="level2">
-<h2 class="anchored" data-anchor-id="privacy-and-data-collection">Privacy and Data Collection</h2>
+<p>## Privacy and Data Collection</p>
 <p>This data collection process raised serious privacy concerns. Facebook collected and analyzed the emotional content of users posts without any permission for this experimental purpose (Puschmann &amp; Bozdag, 2014). While users post content knowing it will be seen by friends, they may have different expectations about how that data might be used for psychological research. The platform took advantage of its position as a social network to conduct research that users would not have anticipated when they signed up.</p>
 <p>Also, Facebook did not passively observe user behavior, rather, they manipulated what users saw in order to influence their emotional state. This goes beyond normal data collection and enters the world of experimentation on human subjects. This emotional manipulation could have had real psychological effects, particularly for vulnerable users who might have been experiencing depression or other mental health challenges. By actively showing some users more negative content, Facebook could have possibly worsened mental health outcomes for certain individuals, all without their knowledge of any ethics board.</p>
-</section>
-<section id="bias-and-representation" class="level2">
-<h2 class="anchored" data-anchor-id="bias-and-representation">Bias and Representation</h2>
+<p>## Bias and Representation</p>
 <p>The study also raises questions about exactly who was affected. The experiment included 689,003 users, but we do not know the demographic breakdown of participants or whether certain groups were shown more negative content than others (Kramer et al., 2014).</p>
 <p>Additionally, Facebook users are not representative of the general population. The findings about emotional contagion were generalized to make claims about human psychology and social networks broadly, but the sample consisted only of English-speaking Facebook users during a specific time period. The researchers did not acknowledge these limitations adequately, treating Facebook users as if they were a random sample of humanity rather than a specific subset of people who use social media in particular ways.</p>
-</section>
-<section id="power-dynamics-and-harm" class="level2">
-<h2 class="anchored" data-anchor-id="power-dynamics-and-harm">Power Dynamics and Harm</h2>
+<p>## Power Dynamics and Harm</p>
 <p>This experiment shows how corporations have enormous power over their users with very little accountability. Facebook conducted research that would require a lot of ethical review at any university, yet faced no such oversight because it was done internally by a private company (Meyer, 2014).</p>
 <p>The potential for harm was real and essentially ignored. Some users who were shown more negative content might have experienced worsened mood, increased anxiety, or other psychological effects. Facebook did not follow up with participants to assess harm, offer support, or even inform them they had been part of an experiment. The company prioritized its research interests over human wellbeing, treating hundreds of thousands of people as lab subjects rather than as customers deserving respect and protection.</p>
-</section>
-<section id="why-this-matters" class="level2">
-<h2 class="anchored" data-anchor-id="why-this-matters">Why This Matters</h2>
+<p>## Why This Matters</p>
 <p>This case matters because it reveals how tech companies exploit their power to conduct research in the service of profit maximization, with little regard for user safety or harm that could be caused. Facebook benefits from understanding emotional desires because it helps them design more engaging features that keep users on the platform longer, seeing more ads.</p>
 <p>This experiment demonstrates “surveillance capitalism” at work: users are constantly monitored, their data analyzed, and they are experimented upon to generate profit for the company. The vulnerable are even more at risk because they have fewer alternatives and less power to resist platform policies. When corporations can conduct psychological experiments without consent or oversight, everyone becomes a potential research subject, and the most vulnerable have the least protection.</p>
-</section>
-<section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>## Conclusion</p>
 <p>The Facebook emotional experiment violated fundamental ethical principles of informed consent, respect for users, and protection from harm. It shows how tech companies can use their power over users to conduct research that serves corporate interests while creating risks for users that they never agreed to take. This case serves as a warning about the need for stronger ethical oversight of corporate research and greater protection for the rights and wellbeing of people who use digital platforms.</p>
-</section>
-<section id="references" class="level2">
-<h2 class="anchored" data-anchor-id="references">References</h2>
+<p>## References</p>
 <p>Kramer, A. D., Guillory, J. E., &amp; Hancock, J. T. (2014). Experimental evidence of massive-scale emotional contagion through social networks. <em>Proceedings of the National Academy of Sciences</em>, 111(24), 8788-8790. https://doi.org/10.1073/pnas.1320040111</p>
 <p>Meyer, R. (2014, June 28). Everything we know about Facebook’s secret mood manipulation experiment. <em>The Atlantic</em>. https://www.theatlantic.com/technology/archive/2014/06/everything-we-know-about-facebooks-secret-mood-manipulation-experiment/373648/</p>
 <p>Puschmann, C., &amp; Bozdag, E. (2014). Staking out the unclear ethical terrain of online social experiments. <em>Internet Policy Review</em>, 3(4). https://doi.org/10.14763/2014.4.338</p>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

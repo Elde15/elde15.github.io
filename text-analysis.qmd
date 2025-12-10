@@ -100,7 +100,7 @@ knitr::kable(emotion_counts,
              caption = "Frequency of Emotional Words in Hamlet")
 ```
 
-Insight!: The table shows how often different emotional themes appear in the dialogue. Death appears most frequently, which aligns with Hamlet's dark themes and tragic ending. Love appears less than death, reflecting the play's focus on mortality and revenge over romance. Fear and hate have somepresence, contributing to the play's tense atmosphere.
+Insight!: The table shows how often different emotional themes appear in the dialogue. Death appears most frequently, which aligns with Hamlet's dark themes and tragic ending. Love appears less than death, reflecting the play's focus on mortality and revenge over romance. Fear and hate have some presence, contributing to the play's tense atmosphere.
 
 ```{r}
 #| label: lookaround-analysis
