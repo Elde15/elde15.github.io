@@ -74,14 +74,14 @@
     "href": "netflix-analysis.html",
     "title": "Netflix Content Analysis",
     "section": "",
-    "text": "This analysis will look atthe distribution of content types that is on Netflix, specifically comparing the number of movies versus TV shows on the platform. Understanding this distribution provides insight into Netflix’s content strategy and what type of entertainment they provide. The dataset contains information about titles available on Netflix as of mid-2021, including details about each title’s type, release year, and other characteristics."
+    "text": "This analysis will look at the distribution of content types that is on Netflix, specifically comparing the number of movies versus TV shows on the platform. Understanding this distribution provides insight into Netflix’s content strategy and what type of entertainment they provide. The dataset contains information about titles available on Netflix as of mid-2021, including details about each title’s type, release year, and other characteristics."
   },
   {
     "objectID": "netflix-analysis.html#introduction",
     "href": "netflix-analysis.html#introduction",
     "title": "Netflix Content Analysis",
     "section": "",
-    "text": "This analysis will look atthe distribution of content types that is on Netflix, specifically comparing the number of movies versus TV shows on the platform. Understanding this distribution provides insight into Netflix’s content strategy and what type of entertainment they provide. The dataset contains information about titles available on Netflix as of mid-2021, including details about each title’s type, release year, and other characteristics."
+    "text": "This analysis will look at the distribution of content types that is on Netflix, specifically comparing the number of movies versus TV shows on the platform. Understanding this distribution provides insight into Netflix’s content strategy and what type of entertainment they provide. The dataset contains information about titles available on Netflix as of mid-2021, including details about each title’s type, release year, and other characteristics."
   },
   {
     "objectID": "netflix-analysis.html#data-loading",
